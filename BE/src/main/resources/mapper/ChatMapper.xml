@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mukho.linepro.mapper.ChatMapper">
+
+    <select id="getChatList" resultType="com.mukho.linepro.dto.chat.ChatDto">
+        SELECT
+            send_user_id sendUserId,
+            message,
+            not_read notRead,
+            send_at sendAt
+        FROM
+            chat
+        WHERE
+            room_id = #{roomId}
+        ORDER BY
+            send_at
+    </select>
+
+    <insert id="sendChat">
+        INSERT INTO
+            chat(room_id, send_user_id, message, not_read)
+        VALUES
+            (#{roomId}, #{sendUserId}, #{message}, 1)
+    </insert>
+
+    <insert id="sendSelfChat">
+        INSERT INTO
+            chat(room_id, send_user_id, message, not_read)
+        VALUES
+            (#{roomId}, #{sendUserId}, #{message}, 0)
+    </insert>
+
+    <update id="readChat">
+        UPDATE
+            chat
+        SET
+            not_read = 0
+        WHERE
+            room_id = #{roomId}
+          AND
+            send_user_id != #{sendUserId}
+          AND
+            not_read = 1
+    </update>
+
+</mapper>

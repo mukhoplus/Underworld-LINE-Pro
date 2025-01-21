@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mukho.linepro.mapper.RoomMapper">
+
+    <select id="isRoomExist" resultType="java.lang.Integer">
+        SELECT
+            COUNT(identifier)
+        FROM
+            room
+        WHERE
+            identifier = #{identifier}
+    </select>
+
+    <insert id="createRoom">
+        INSERT INTO
+            room (identifier, last_message)
+        VALUES (
+                   #{identifier},
+                   ''
+               )
+    </insert>
+
+    <select id="isExistRoom" resultType="java.lang.Integer">
+        SELECT
+            COUNT(identifier)
+        FROM
+            room
+        WHERE
+            identifier = #{identifier}
+    </select>
+
+    <update id="updateRoom">
+        UPDATE
+            room
+        SET
+            last_message = #{message},
+            updated_at = NOW()
+        WHERE
+            room_id = #{roomId}
+    </update>
+
+    <select id="getIdentifier" resultType="java.lang.String">
+        SELECT
+            identifier
+        FROM
+            room
+        WHERE
+            room_id = #{roomId}
+    </select>
+
+    <select id="getRoomListByUserId" resultType="com.mukho.linepro.dto.room.RoomDto">
+        SELECT
+            room_id roomId,
+            (
+                CASE
+                    WHEN room.identifier LIKE CONCAT(#{userId}, '-%') THEN
+                        (SELECT user_id FROM user WHERE user_id = SUBSTRING(room.identifier, LENGTH(CONCAT(#{userId}, '-')) + 1))
+                    WHEN room.identifier LIKE CONCAT('%-', #{userId}) THEN
+                        (SELECT user_id FROM user WHERE user_id = SUBSTRING(room.identifier, 1, POSITION('-' IN room.identifier) - 1))
+                    WHEN room.identifier = CONCAT(#{userId}, '-', #{userId}) THEN
+                            (SELECT user_id FROM user WHERE user_id = #{user_id})
+                    END
+                ) userId,
+            (
+                CASE
+                    WHEN room.identifier LIKE CONCAT(#{userId}, '-%') THEN
+                        (SELECT name FROM user WHERE user_id = SUBSTRING(room.identifier, LENGTH(CONCAT(#{userId}, '-')) + 1))
+                    WHEN room.identifier LIKE CONCAT('%-', #{userId}) THEN
+                        (SELECT name FROM user WHERE user_id = SUBSTRING(room.identifier, 1, POSITION('-' IN room.identifier) - 1))
+                    WHEN room.identifier = CONCAT(#{userId}, '-', #{userId}) THEN
+                            (SELECT name FROM user WHERE user_id = #{user_id})
+                    END
+                ) roomName,
+            last_message lastMessage,
+            updated_at updatedAt,
+            (
+                SELECT
+                    COUNT(chat_id)
+                FROM
+                    chat
+                WHERE
+                    room_id = room.room_id
+                  AND send_user_id != #{userId}
+                AND not_read = 1
+                ) notReadCount
+        FROM
+            room
+            JOIN user ON user_id = #{userId}
+        WHERE
+            identifier like CONCAT(#{userId}, '-%')
+           OR
+            identifier like CONCAT('%-', #{userId})
+        ORDER BY
+            updated_at DESC,
+            room_id DESC
+    </select>
+
+    <select id="getRoomIdByIdentifier" resultType="java.lang.Integer">
+        SELECT
+            room_id roomId
+        FROM
+            room
+        WHERE
+            identifier = #{identifier}
+    </select>
+
+</mapper>

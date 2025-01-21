@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mukho.linepro.mapper.UserMapper">
+
+    <insert id="signup">
+        INSERT INTO
+            user (id, password, name)
+        VALUES (
+                   #{id},
+                   #{password},
+                   #{name}
+               )
+    </insert>
+
+    <select id="login" resultType="com.mukho.linepro.dto.user.User">
+        SELECT
+            user_id userId,
+            id,
+            password,
+            name
+        FROM
+            user
+        WHERE
+            id = #{id}
+    </select>
+
+    <select id="getUserId" resultType="java.lang.Integer">
+        SELECT
+            user_id userId
+        FROM
+            user
+        WHERE
+            id = #{id}
+    </select>
+
+    <select id="getUserList" resultType="com.mukho.linepro.dto.user.UserListDto">
+        SELECT
+            user_id userId,
+            name
+        FROM
+            user
+        ORDER BY
+            name
+    </select>
+
+    <select id="duplicateCheckId" resultType="java.lang.Integer">
+        SELECT
+            COUNT(id)
+        FROM
+            user
+        WHERE
+            id = #{id}
+    </select>
+
+    <select id="duplicateCheckName" resultType="java.lang.Integer">
+        SELECT
+            COUNT(name)
+        FROM
+            user
+        WHERE
+            name = #{name}
+    </select>
+
+</mapper>
