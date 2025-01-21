@@ -27,7 +27,7 @@ export const useAuth = () => {
       const response = await axiosRequest("get", "/user/session");
       const userId = response?.data || 0;
       setUserId(userId);
-      setIsSession(userId !== 0);
+      setIsSession(true);
       return userId;
     } catch (error) {
       setUserId(0);

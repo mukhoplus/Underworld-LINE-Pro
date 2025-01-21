@@ -15,7 +15,7 @@ public class CorsConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
                         .allowedOrigins("https://linepro.mukho.r-e.kr")
-                        .allowedOrigins("http://localhost")
+                        .allowedOrigins("http://localhost:3000")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
                         .allowCredentials(true)
                         .allowedHeaders("*");
