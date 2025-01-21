@@ -9,7 +9,7 @@ import lombok.Data;
 
 @Data
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-public class ChatReceipts {
+public class ReadReceipts {
     private Integer chatId;
     private Integer userId;
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "KST")

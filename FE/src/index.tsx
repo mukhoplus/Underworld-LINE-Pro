@@ -1,8 +1,19 @@
 import ReactDOM from "react-dom/client";
+import { RecoilRoot } from "recoil";
+import AxiosProvider from "axios";
+import { BaseURL } from "./services/HostingService";
+
 import App from "./App";
 import "./index.css";
 
-const root = ReactDOM.createRoot(
+AxiosProvider.defaults.baseURL = `${BaseURL}/api/v2`; // `https://${BaseURL}/api/v2`;
+
+const linepro = ReactDOM.createRoot(
   document.getElementById("mukho") as HTMLElement
 );
-root.render(<App />);
+
+linepro.render(
+  <RecoilRoot>
+    <App />
+  </RecoilRoot>
+);
