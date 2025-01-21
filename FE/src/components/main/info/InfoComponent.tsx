@@ -10,29 +10,27 @@ import RoomComponent from "./RoomComponent";
 import { axiosRequest } from "../../../services/AxiosService";
 import SocketService from "../../../services/SocketService";
 import "./index.css";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import {
+  userIdState,
+  userListState,
+  roomIdState,
+  roomListState,
+  chatListState,
+} from "../../../stores/atoms";
 
-const InfoComponent = ({
-  userId,
-  setUserId,
-  userList,
-  setUserList,
-  setRoomId,
-  roomList,
-  setRoomList,
-  setChatList,
-  allNotReadCount,
-}: {
-  userId: number;
-  setUserId: (userId: number) => void;
-  userList: any[];
-  setUserList: (userList: any[]) => void;
-  setRoomId: (roomId: number) => void;
-  roomList: any[];
-  setRoomList: (roomList: any[]) => void;
-  setChatList: (chatList: any[]) => void;
-  allNotReadCount: number;
-}) => {
+const InfoComponent: React.FC = () => {
+  const userId = useRecoilValue(userIdState);
+  const setUserId = useSetRecoilState(userIdState);
+  const userList = useRecoilValue(userListState);
+  const setUserList = useSetRecoilState(userListState);
+  const setRoomId = useSetRecoilState(roomIdState);
+  const roomList = useRecoilValue(roomListState);
+  const setRoomList = useSetRecoilState(roomListState);
+  const setChatList = useSetRecoilState(chatListState);
   const [menu, setMenu] = useState<number>(0);
+  const [allNotReadCount, setAllNotReadCount] = useState<number>(0);
+  const chatList = useRecoilValue(chatListState);
 
   const handleUserList = async () => {
     axiosRequest("get", "/user/list")
@@ -63,10 +61,17 @@ const InfoComponent = ({
     setChatList([]);
   };
 
+  const getAllNotReadCount = (roomList: any[]) => {
+    return roomList.reduce((acc, cur) => {
+      return acc + (cur.notReadCount || 0);
+    }, 0);
+  };
+
   useEffect(() => {
     handleUserList();
     handleRoomList();
-  }, [userId]); // eslint-disable-line react-hooks/exhaustive-deps
+    setAllNotReadCount(getAllNotReadCount(roomList));
+  }, [userId, roomList, chatList]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>

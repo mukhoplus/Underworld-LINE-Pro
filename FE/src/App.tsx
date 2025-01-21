@@ -1,48 +1,22 @@
-import React, { useState, useEffect } from "react";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import {
-  userIdState,
-  userListState,
-  roomListState,
-  roomIdState,
-  chatListState,
-  getSessionUserId,
-} from "./stores/atoms";
+import React, { useEffect } from "react";
+import { useRecoilValue } from "recoil";
+import { userIdState, isSessionState } from "./stores/atoms";
+import { useAuth } from "./hooks/useAuth";
 import Hello from "./pages/hello";
 import Main from "./pages/main";
 
 const App: React.FC = () => {
-  const [isSession, setIsSession] = useState<boolean>(false);
-
+  const { checkSession } = useAuth();
   const userId = useRecoilValue(userIdState);
-  const userList = useRecoilValue(userListState);
-  const roomList = useRecoilValue(roomListState);
-  const roomId = useRecoilValue(roomIdState);
-  const chatList = useRecoilValue(chatListState);
-
-  const setUserId = useSetRecoilState(userIdState);
+  const isSession = useRecoilValue(isSessionState);
 
   useEffect(() => {
-    getSessionUserId(setUserId, setIsSession);
-  }, [userId, setUserId]);
+    checkSession();
+  }, [checkSession]);
 
   if (!isSession) return null;
 
-  return (
-    <>
-      {userId === 0 ? (
-        <Hello setUserId={setUserId} setIsSession={setIsSession} />
-      ) : (
-        <Main
-          userId={userId}
-          userList={userList}
-          roomList={roomList}
-          roomId={roomId}
-          chatList={chatList}
-        />
-      )}
-    </>
-  );
+  return <>{userId === 0 ? <Hello /> : <Main />}</>;
 };
 
 export default App;

@@ -7,24 +7,22 @@ import ChatBlank from "./ChatBlnak";
 import ChatList from "./ChatList";
 import { Chat } from "../../../interfaces/Chat";
 import "./index.css";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import {
+  userIdState,
+  roomIdState,
+  chatListState,
+  roomListState,
+} from "../../../stores/atoms";
 
-const ChatComponent = ({
-  userId,
-  roomId,
-  setRoomId,
-  chatList,
-  roomList,
-  setRoomList,
-  setChatList,
-}: {
-  userId: number;
-  roomId: number;
-  setRoomId: (roomId: number) => void;
-  chatList: Chat[];
-  roomList: any[];
-  setRoomList: (roomList: any[]) => void;
-  setChatList: (chatList: Chat[]) => void;
-}) => {
+const ChatComponent: React.FC = () => {
+  const userId = useRecoilValue(userIdState);
+  const roomId = useRecoilValue(roomIdState);
+  const setRoomId = useSetRecoilState(roomIdState);
+  const chatList = useRecoilValue(chatListState);
+  const roomList = useRecoilValue(roomListState);
+  const setRoomList = useSetRecoilState(roomListState);
+  const setChatList = useSetRecoilState(chatListState);
   const [inputMessage, setInputMessage] = useState<string>("");
   const chatListRef = useRef<HTMLDivElement | null>(null);
   let dateOutput: { [key: string]: boolean } = {};

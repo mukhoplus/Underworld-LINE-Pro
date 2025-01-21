@@ -7,24 +7,15 @@ import {
   LockOutlined,
 } from "@ant-design/icons";
 import styled from "styled-components";
-import { getSessionUserId } from "../../stores/atoms";
+import { useAuth } from "../../hooks/useAuth";
 import { warningModal, errorModal } from "../../utils/ModalUtil";
-import { axiosRequest } from "../../services/AxiosService";
-import { LoginDto } from "../../interfaces/User";
 
 import "./index.css";
 
-interface LoginComponentProps {
-  setPage: (page: number) => void;
-  setUserId: (id: number) => void;
-  setIsSession: (isSession: boolean) => void;
-}
-
-const LoginComponent: React.FC<LoginComponentProps> = ({
+const LoginComponent: React.FC<{ setPage: (page: number) => void }> = ({
   setPage,
-  setUserId,
-  setIsSession,
 }) => {
+  const { login } = useAuth();
   const [id, setId] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
@@ -39,33 +30,15 @@ const LoginComponent: React.FC<LoginComponentProps> = ({
       return;
     }
 
-    const postData: LoginDto = {
-      id: id,
-      password: password,
-    };
-
-    axiosRequest("post", `/user/login`, postData)
-      .then(async (response) => {
-        if (response.data === "401 UNAUTHORIZED") {
-          await errorModal(
-            "로그인 실패",
-            "아이디 또는 비밀번호가 일치하지 않습니다."
-          );
-          return;
-        }
-
-        if (response.data === "409 CONFLICT") {
-          await errorModal(
-            "로그인 실패",
-            "다른 환경에서 이미 로그인 중입니다."
-          );
-          return;
-        }
-
-        await getSessionUserId(setUserId, setIsSession);
-        setPage(0);
-      })
-      .catch(() => {});
+    const result = await login(id, password);
+    if (result === "unauthorized") {
+      await errorModal(
+        "로그인 실패",
+        "아이디 또는 비밀번호가 일치하지 않습니다."
+      );
+    } else if (result === "conflict") {
+      await errorModal("로그인 실패", "다른 환경에서 이미 로그인 중입니다.");
+    }
   };
 
   const handleEnterKey = (e: React.KeyboardEvent) => {

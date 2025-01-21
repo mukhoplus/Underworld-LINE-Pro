@@ -9,22 +9,17 @@ import {
 } from "@ant-design/icons";
 import styled from "styled-components";
 import { warningModal } from "../../utils/ModalUtil";
-import { getSessionUserId } from "../../stores/atoms";
 import { axiosRequest } from "../../services/AxiosService";
 import "./index.css";
 import { SignupDto } from "../../interfaces/User";
+import { useAuth } from "../../hooks/useAuth";
 
 interface SignupComponentProps {
   setPage: (page: number) => void;
-  setUserId: (id: number) => void;
-  setIsSession: (isSession: boolean) => void;
 }
 
-const SignupComponent: React.FC<SignupComponentProps> = ({
-  setPage,
-  setUserId,
-  setIsSession,
-}) => {
+const SignupComponent: React.FC<SignupComponentProps> = ({ setPage }) => {
+  const { checkSession } = useAuth();
   const [id, setId] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [name, setName] = useState<string>("");
@@ -51,7 +46,7 @@ const SignupComponent: React.FC<SignupComponentProps> = ({
 
     axiosRequest("post", "/user/signup", postData)
       .then(async () => {
-        await getSessionUserId(setUserId, setIsSession);
+        await checkSession();
         setPage(0);
       })
       .catch(() => {});

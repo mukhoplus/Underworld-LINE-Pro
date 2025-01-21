@@ -4,28 +4,15 @@ import styled from "styled-components";
 import LoginComponent from "../../components/hello/LoginComponent";
 import SignupComponent from "../../components/hello/SignupComponent";
 
-interface HelloProps {
-  setUserId: (id: number) => void;
-  setIsSession: (isSession: boolean) => void;
-}
-
-const Hello: React.FC<HelloProps> = ({ setUserId, setIsSession }) => {
+const Hello: React.FC = () => {
   const [page, setPage] = useState(0);
 
   return (
     <HelloWrapper>
       {page === 0 ? (
-        <LoginComponent
-          setPage={setPage}
-          setUserId={setUserId}
-          setIsSession={setIsSession}
-        />
+        <LoginComponent setPage={setPage} />
       ) : (
-        <SignupComponent
-          setPage={setPage}
-          setUserId={setUserId}
-          setIsSession={setIsSession}
-        />
+        <SignupComponent setPage={setPage} />
       )}
     </HelloWrapper>
   );
