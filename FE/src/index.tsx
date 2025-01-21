@@ -6,7 +6,7 @@ import { BaseURL } from "./services/HostingService";
 import App from "./App";
 import "./index.css";
 
-AxiosProvider.defaults.baseURL = `${BaseURL}/api/v2`; // `https://${BaseURL}/api/v2`;
+AxiosProvider.defaults.baseURL = `http://${BaseURL}/api/v2`; // `https://${BaseURL}/api/v2`;
 
 const linepro = ReactDOM.createRoot(
   document.getElementById("mukho") as HTMLElement

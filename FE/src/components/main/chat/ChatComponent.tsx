@@ -6,23 +6,27 @@ import { isInNotReadMessages } from "../../../utils/MessageUtil";
 import ChatBlank from "./ChatBlnak";
 import ChatList from "./ChatList";
 import { Chat } from "../../../interfaces/Chat";
-import "./index.css";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import {
-  userIdState,
-  roomIdState,
-  chatListState,
-  roomListState,
-} from "../../../stores/atoms";
+import "./ChatComponent.css";
 
-const ChatComponent: React.FC = () => {
-  const userId = useRecoilValue(userIdState);
-  const roomId = useRecoilValue(roomIdState);
-  const setRoomId = useSetRecoilState(roomIdState);
-  const chatList = useRecoilValue(chatListState);
-  const roomList = useRecoilValue(roomListState);
-  const setRoomList = useSetRecoilState(roomListState);
-  const setChatList = useSetRecoilState(chatListState);
+interface ChatComponentProps {
+  userId: number;
+  roomId: number;
+  setRoomId: (id: number) => void;
+  chatList: Chat[];
+  roomList: any[];
+  setRoomList: (list: any[]) => void;
+  setChatList: (list: Chat[]) => void;
+}
+
+const ChatComponent: React.FC<ChatComponentProps> = ({
+  userId,
+  roomId,
+  setRoomId,
+  chatList,
+  roomList,
+  setRoomList,
+  setChatList,
+}) => {
   const [inputMessage, setInputMessage] = useState<string>("");
   const chatListRef = useRef<HTMLDivElement | null>(null);
   let dateOutput: { [key: string]: boolean } = {};

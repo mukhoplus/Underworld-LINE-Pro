@@ -5,32 +5,38 @@ import {
   MessageOutlined,
   LogoutOutlined,
 } from "@ant-design/icons";
-import UserComponent from "./UserComponent";
-import RoomComponent from "./RoomComponent";
+import UserComponent from "./user/UserComponent";
+import RoomComponent from "./room/RoomComponent";
 import { axiosRequest } from "../../../services/AxiosService";
 import SocketService from "../../../services/SocketService";
-import "./index.css";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import {
-  userIdState,
-  userListState,
-  roomIdState,
-  roomListState,
-  chatListState,
-} from "../../../stores/atoms";
+import "./InfoComponent.css";
 
-const InfoComponent: React.FC = () => {
-  const userId = useRecoilValue(userIdState);
-  const setUserId = useSetRecoilState(userIdState);
-  const userList = useRecoilValue(userListState);
-  const setUserList = useSetRecoilState(userListState);
-  const setRoomId = useSetRecoilState(roomIdState);
-  const roomList = useRecoilValue(roomListState);
-  const setRoomList = useSetRecoilState(roomListState);
-  const setChatList = useSetRecoilState(chatListState);
+import styled from "styled-components";
+
+interface InfoComponentProps {
+  userId: number;
+  setUserId: (id: number) => void;
+  userList: any[];
+  setUserList: (list: any[]) => void;
+  setRoomId: (id: number) => void;
+  roomList: any[];
+  setRoomList: (list: any[]) => void;
+  setChatList: (list: any[]) => void;
+  allNotReadCount: number;
+}
+
+const InfoComponent: React.FC<InfoComponentProps> = ({
+  userId,
+  setUserId,
+  userList,
+  setUserList,
+  setRoomId,
+  roomList,
+  setRoomList,
+  setChatList,
+  allNotReadCount,
+}) => {
   const [menu, setMenu] = useState<number>(0);
-  const [allNotReadCount, setAllNotReadCount] = useState<number>(0);
-  const chatList = useRecoilValue(chatListState);
 
   const handleUserList = async () => {
     axiosRequest("get", "/user/list")
@@ -61,21 +67,14 @@ const InfoComponent: React.FC = () => {
     setChatList([]);
   };
 
-  const getAllNotReadCount = (roomList: any[]) => {
-    return roomList.reduce((acc, cur) => {
-      return acc + (cur.notReadCount || 0);
-    }, 0);
-  };
-
   useEffect(() => {
     handleUserList();
     handleRoomList();
-    setAllNotReadCount(getAllNotReadCount(roomList));
-  }, [userId, roomList, chatList]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [userId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>
-      <Row>
+      <InfoWrapper>
         <Col style={{ borderRight: "1px solid gainsboro" }}>
           <Row>
             <Button className="btn-icon" onClick={() => setMenu(0)}>
@@ -120,7 +119,7 @@ const InfoComponent: React.FC = () => {
             </Button>
           </Row>
         </Col>
-        <Col style={{ width: "389px" }}>
+        <ContentCol>
           {menu === 0 ? (
             <UserComponent
               userId={userId}
@@ -131,13 +130,26 @@ const InfoComponent: React.FC = () => {
             <RoomComponent
               userId={userId}
               setRoomId={setRoomId}
-              roomList={roomList}
+              roomList={[]}
+              // BE 수정 후:  roomList={roomList}
             />
           )}
-        </Col>
-      </Row>
+        </ContentCol>
+      </InfoWrapper>
     </>
   );
 };
+
+const InfoWrapper = styled.div`
+  display: flex;
+  height: 100%;
+  overflow: hidden;
+`;
+
+const ContentCol = styled(Col)`
+  max-width: calc(100% - 50px);
+  height: 100%;
+  overflow: auto;
+`;
 
 export default InfoComponent;

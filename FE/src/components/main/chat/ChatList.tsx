@@ -43,6 +43,7 @@ const ChatList: React.FC<ChatListProps> = ({
           return response.data.roomName || "";
         })
         .catch((error) => {
+          setRoomList([]);
           return "";
         });
     }

@@ -1,14 +1,27 @@
+import React, { useCallback } from "react";
 import { Avatar, Badge } from "antd";
-import { getRoomDateTime } from "../../../utils/DateTimeUtil";
-import { LongStringUtil } from "../../../utils/LongStringUtil";
-import "./RoomInfo.css";
-import "../chat/index.css";
+import { getRoomDateTime } from "../../../../utils/DateTimeUtil";
+import { LongStringUtil } from "../../../../utils/LongStringUtil";
+import "./RoomComponent.css";
+import "../../chat/ChatComponent.css";
+import { RoomDto } from "src/interfaces/Room";
 
-const RoomInfo = ({ userId, roomList, setRoomId }: any) => {
-  return (
-    <>
+interface RoomComponentProps {
+  userId: number;
+  roomList: RoomDto[];
+  setRoomId: (id: number) => void;
+}
+
+const RoomComponent: React.FC<RoomComponentProps> = React.memo(
+  ({ userId, roomList, setRoomId }) => {
+    const handleRoomClick = useCallback(
+      (roomId: number) => () => setRoomId(roomId),
+      [setRoomId]
+    );
+
+    return (
       <div className="room-list custom-scroll">
-        {roomList.map((room: any) => (
+        {roomList.map((room: RoomDto) => (
           <div
             className="room"
             key={room.roomId}
@@ -17,7 +30,7 @@ const RoomInfo = ({ userId, roomList, setRoomId }: any) => {
               alignItems: "center",
               height: "60px",
             }}
-            onClick={() => setRoomId(room.roomId)}
+            onClick={handleRoomClick(room.roomId)}
           >
             <div
               className="avarta"
@@ -62,8 +75,8 @@ const RoomInfo = ({ userId, roomList, setRoomId }: any) => {
           </div>
         ))}
       </div>
-    </>
-  );
-};
+    );
+  }
+);
 
-export default RoomInfo;
+export default RoomComponent;

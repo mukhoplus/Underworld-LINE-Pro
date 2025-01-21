@@ -14,7 +14,6 @@ const App: React.FC = () => {
     checkSession();
   }, [checkSession]);
 
-  console.log(isSession);
   if (!isSession) return null;
 
   return <>{userId === 0 ? <Hello /> : <Main />}</>;

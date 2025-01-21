@@ -10,7 +10,7 @@ import styled from "styled-components";
 import { useAuth } from "../../hooks/useAuth";
 import { warningModal, errorModal } from "../../utils/ModalUtil";
 
-import "./index.css";
+import "./Hello.css";
 
 const LoginComponent: React.FC<{ setPage: (page: number) => void }> = ({
   setPage,

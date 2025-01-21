@@ -10,9 +10,10 @@ import {
 import styled from "styled-components";
 import { warningModal } from "../../utils/ModalUtil";
 import { axiosRequest } from "../../services/AxiosService";
-import "./index.css";
 import { SignupDto } from "../../interfaces/User";
 import { useAuth } from "../../hooks/useAuth";
+
+import "./Hello.css";
 
 interface SignupComponentProps {
   setPage: (page: number) => void;

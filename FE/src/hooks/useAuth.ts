@@ -30,6 +30,7 @@ export const useAuth = () => {
       setIsSession(true);
       return userId;
     } catch (error) {
+      console.log(error);
       setUserId(0);
       setIsSession(false);
       return 0;
