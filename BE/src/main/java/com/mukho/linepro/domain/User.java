@@ -1,4 +1,4 @@
-package com.mukho.linepro.dto.user;
+package com.mukho.linepro.domain;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 

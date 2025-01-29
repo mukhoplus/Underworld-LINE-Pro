@@ -2,6 +2,7 @@ package com.mukho.linepro.service.impl;
 
 import java.util.List;
 
+import com.mukho.linepro.domain.Chat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,12 +24,14 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public int sendChat(SendChatDto sendChatDto) {
-        return chatMapper.sendChat(sendChatDto);
-    }
+        Chat chat = new Chat();
 
-    @Override
-    public int sendSelfChat(SendChatDto sendChatDto) {
-        return chatMapper.sendSelfChat(sendChatDto);
+        chat.setRoomId(sendChatDto.getRoomId());
+        chat.setSendUserId(sendChatDto.getSendUserId());
+        chat.setMessage(sendChatDto.getMessage());
+
+        chatMapper.sendChat(chat);
+        return chat.getChatId();
     }
 
     @Override

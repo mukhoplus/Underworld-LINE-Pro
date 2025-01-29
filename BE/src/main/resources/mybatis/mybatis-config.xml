@@ -2,10 +2,9 @@
 <!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
     <typeAliases>
-        <typeAlias type="com.mukho.linepro.dto.user.User" alias="User" />
-        <typeAlias type="com.mukho.linepro.dto.room.Room" alias="Room" />
-        <typeAlias type="com.mukho.linepro.dto.room.RoomParticipants" alias="RoomParticipants" />
-        <typeAlias type="com.mukho.linepro.dto.chat.Chat" alias="Chat" />
-        <typeAlias type="com.mukho.linepro.dto.chat.ReadReceipts" alias="ReadReceipts" />
+        <typeAlias type="com.mukho.linepro.domain.User" alias="User" />
+        <typeAlias type="com.mukho.linepro.domain.Room" alias="Room" />
+        <typeAlias type="com.mukho.linepro.domain.RoomParticipants" alias="Participants" />
+        <typeAlias type="com.mukho.linepro.domain.Chat" alias="Chat" />
     </typeAliases>
 </configuration>

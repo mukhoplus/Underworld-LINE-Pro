@@ -3,106 +3,73 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mukho.linepro.mapper.RoomMapper">
 
-    <select id="isRoomExist" resultType="java.lang.Integer">
-        SELECT
-            COUNT(identifier)
-        FROM
-            room
-        WHERE
-            identifier = #{identifier}
-    </select>
-
-    <insert id="createRoom">
-        INSERT INTO
-            room (identifier, last_message)
-        VALUES (
-                   #{identifier},
-                   ''
-               )
+    <insert id="createRoom" parameterType="com.mukho.linepro.domain.Room" 
+        useGeneratedKeys="true" keyProperty="roomId" keyColumn="room_id">
+        INSERT INTO room (room_type, name, last_message)
+            VALUES (#{roomType}, #{name}, #{lastMessage})
+        <selectKey resultType="int" keyProperty="roomId" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
     </insert>
 
-    <select id="isExistRoom" resultType="java.lang.Integer">
-        SELECT
-            COUNT(identifier)
-        FROM
-            room
-        WHERE
-            identifier = #{identifier}
-    </select>
-
     <update id="updateRoom">
-        UPDATE
-            room
-        SET
-            last_message = #{message},
-            updated_at = NOW()
-        WHERE
-            room_id = #{roomId}
+        UPDATE room 
+        SET last_message = #{lastMessage},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE room_id = #{roomId}
     </update>
-
-    <select id="getIdentifier" resultType="java.lang.String">
-        SELECT
-            identifier
-        FROM
-            room
-        WHERE
-            room_id = #{roomId}
-    </select>
 
     <select id="getRoomListByUserId" resultType="com.mukho.linepro.dto.room.RoomDto">
         SELECT
-            room_id roomId,
-            (
-                CASE
-                    WHEN room.identifier LIKE CONCAT(#{userId}, '-%') THEN
-                        (SELECT user_id FROM user WHERE user_id = SUBSTRING(room.identifier, LENGTH(CONCAT(#{userId}, '-')) + 1))
-                    WHEN room.identifier LIKE CONCAT('%-', #{userId}) THEN
-                        (SELECT user_id FROM user WHERE user_id = SUBSTRING(room.identifier, 1, POSITION('-' IN room.identifier) - 1))
-                    WHEN room.identifier = CONCAT(#{userId}, '-', #{userId}) THEN
-                            (SELECT user_id FROM user WHERE user_id = #{user_id})
-                    END
-                ) userId,
-            (
-                CASE
-                    WHEN room.identifier LIKE CONCAT(#{userId}, '-%') THEN
-                        (SELECT name FROM user WHERE user_id = SUBSTRING(room.identifier, LENGTH(CONCAT(#{userId}, '-')) + 1))
-                    WHEN room.identifier LIKE CONCAT('%-', #{userId}) THEN
-                        (SELECT name FROM user WHERE user_id = SUBSTRING(room.identifier, 1, POSITION('-' IN room.identifier) - 1))
-                    WHEN room.identifier = CONCAT(#{userId}, '-', #{userId}) THEN
-                            (SELECT name FROM user WHERE user_id = #{user_id})
-                    END
-                ) roomName,
-            last_message lastMessage,
-            updated_at updatedAt,
-            (
-                SELECT
-                    COUNT(chat_id)
-                FROM
-                    chat
-                WHERE
-                    room_id = room.room_id
-                  AND send_user_id != #{userId}
-                AND not_read = 1
-                ) notReadCount
-        FROM
-            room
-            JOIN user ON user_id = #{userId}
-        WHERE
-            identifier like CONCAT(#{userId}, '-%')
-           OR
-            identifier like CONCAT('%-', #{userId})
-        ORDER BY
-            updated_at DESC,
-            room_id DESC
+            r.room_id as roomId,
+            r.name as roomName,
+            r.last_message as lastMessage,
+            r.updated_at as updatedAt,
+            rp.last_read_chat_id as lastReadChatId,
+            (SELECT COUNT(*)
+             FROM chat c
+             WHERE c.room_id = r.room_id
+             AND c.chat_id > rp.last_read_chat_id) as notReadCount
+        FROM room r
+        JOIN room_participants rp ON r.room_id = rp.room_id
+        WHERE rp.user_id = #{userId}
+        ORDER BY r.updated_at DESC
     </select>
 
-    <select id="getRoomIdByIdentifier" resultType="java.lang.Integer">
-        SELECT
-            room_id roomId
-        FROM
-            room
-        WHERE
-            identifier = #{identifier}
+    <select id="getRoomById" resultType="com.mukho.linepro.domain.Room">
+        SELECT 
+            room_id as roomId,
+            room_type as roomType,
+            name,
+            last_message as lastMessage,
+            updated_at as updatedAt
+        FROM room 
+        WHERE room_id = #{roomId}
+    </select>
+
+    <select id="findOneToOneRoom" resultType="Integer">
+        SELECT r.room_id
+        FROM room r
+        JOIN room_participants rp1 ON r.room_id = rp1.room_id
+        JOIN room_participants rp2 ON r.room_id = rp2.room_id
+        WHERE r.room_type = 'ONE_TO_ONE'
+        AND rp1.user_id = #{userId1}
+        AND rp2.user_id = #{userId2}
+        LIMIT 1
+    </select>
+
+    <select id="findMeRoom" resultType="Integer">
+        SELECT r.room_id
+        FROM room r
+                 JOIN room_participants rp ON r.room_id = rp.room_id
+        WHERE r.room_type = 'ME'
+          AND rp.user_id = #{userId}
+          AND (
+                  SELECT COUNT(*)
+                  FROM room_participants
+                  WHERE room_id = r.room_id
+              ) = 1
+        LIMIT 1
     </select>
 
 </mapper>

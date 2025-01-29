@@ -13,7 +13,7 @@
                )
     </insert>
 
-    <select id="login" resultType="com.mukho.linepro.dto.user.User">
+    <select id="login" resultType="com.mukho.linepro.domain.User">
         SELECT
             user_id userId,
             id,
@@ -60,6 +60,15 @@
             user
         WHERE
             name = #{name}
+    </select>
+
+    <select id="getName" resultType="java.lang.String">
+        SELECT
+            name
+        FROM
+            user
+        WHERE
+            user_id = #{id}
     </select>
 
 </mapper>

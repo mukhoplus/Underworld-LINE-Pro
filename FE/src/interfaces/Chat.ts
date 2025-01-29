@@ -16,12 +16,6 @@ export interface ChatDto {
   sendAt: string; // ISO 8601 형식의 날짜 문자열
 }
 
-export interface ChatReceipts {
-  chatId: number;
-  userId: number;
-  readAt: string; // ISO 8601 형식의 날짜 문자열
-}
-
 export interface ChatResponseDto {
   roomId: number;
   chatList: ChatDto[];

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import com.mukho.linepro.dto.user.LoginDto;
 import com.mukho.linepro.dto.user.LoginUserDto;
 import com.mukho.linepro.dto.user.SignupDto;
-import com.mukho.linepro.dto.user.User;
+import com.mukho.linepro.domain.User;
 import com.mukho.linepro.dto.user.UserListDto;
 import com.mukho.linepro.mapper.UserMapper;
 import com.mukho.linepro.service.UserService;
@@ -79,4 +79,5 @@ public class UserServiceImpl implements UserService {
     public boolean duplicateCheckName(String name) {
         return userMapper.duplicateCheckName(name) > 0;
     }
+
 }

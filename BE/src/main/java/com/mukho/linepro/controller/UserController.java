@@ -1,6 +1,7 @@
 package com.mukho.linepro.controller;
 
-import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -27,7 +28,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    private static HashMap<Integer, Integer> customSession = new HashMap<>();
+    private static Map<Integer, Integer> customSession = new ConcurrentHashMap<>();
 
     public void setSession(HttpServletRequest request, LoginUserDto loginUserDto) {
         HttpSession session = request.getSession();
@@ -47,7 +48,6 @@ public class UserController {
         } catch (Exception e) {
 
         }
-
     }
 
     @GetMapping("/session")
@@ -63,7 +63,6 @@ public class UserController {
         } catch (Exception e) {
             return ResponseEntity.ok(0);
         }
-
     }
 
     @PostMapping("/signup")

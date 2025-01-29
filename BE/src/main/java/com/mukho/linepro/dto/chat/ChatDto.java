@@ -10,6 +10,7 @@ import lombok.Data;
 @Data
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class ChatDto {
+    int chatId;
     int sendUserId;
     String message;
     int notRead;

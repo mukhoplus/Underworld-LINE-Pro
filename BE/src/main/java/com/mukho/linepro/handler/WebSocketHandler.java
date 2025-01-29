@@ -1,9 +1,11 @@
 package com.mukho.linepro.handler;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
+import com.mukho.linepro.service.RoomParticipantsService;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,22 +29,22 @@ import com.mukho.linepro.service.RoomService;
 
 @Component
 public class WebSocketHandler extends TextWebSocketHandler {
-
-    private Map<Integer, WebSocketSession> sessions = new HashMap<>();
+    private Map<Integer, WebSocketSession> sessions = new ConcurrentHashMap<>();
 
     private RoomService roomService;
-
     private ChatService chatService;
+    private RoomParticipantsService participantsService;
 
     @Autowired
-    public WebSocketHandler(RoomService roomService, ChatService chatService) {
+    public WebSocketHandler(RoomService roomService, ChatService chatService, RoomParticipantsService participantsService) {
         this.roomService = roomService;
         this.chatService = chatService;
+        this.participantsService = participantsService;
     }
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        int userId;
+        int userId = 0;
 
         try {
             HttpSession curUserSession = (HttpSession) session.getAttributes().get("httpSession");
@@ -50,10 +52,11 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
             userId = loginUserDto.getUserId();
         } catch(Exception e) {
-            if (session.getUri() == null) return;
-
-            String value = session.getUri().getQuery().split("=")[1];
-            userId = Integer.parseInt(value);
+            System.out.println(e.getMessage());
+//            if (session.getUri() == null) return;
+//
+//            String value = session.getUri().getQuery().split("=")[1];
+//            userId = Integer.parseInt(value);
         }
 
         session.getAttributes().put("userId", userId);
@@ -87,19 +90,22 @@ public class WebSocketHandler extends TextWebSocketHandler {
             SendChatDto sendChatDto = socketSendDto.getData();
 
             int roomId = sendChatDto.getRoomId();
-            String identifier = roomService.getIdentifier(roomId);
             int sendUserId = sendChatDto.getSendUserId();
-            int receiveUserId = getReceiveUserId(identifier, sendUserId);
+            List<Integer> receiveUserIdList = getReceiveUserIdList(roomId, sendUserId);
 
             if (socketSendDto.getType().equals("chat")) {
                 String message = sendChatDto.getMessage();
                 roomService.updateRoom(roomId, message);
-                if (sendUserId == receiveUserId) {
-                    chatService.sendSelfChat(new SendChatDto(roomId, sendUserId, message));
-                } else {
-                    chatService.sendChat(new SendChatDto(roomId, sendUserId, message));
-                }
+
+                int lastChatId = chatService.sendChat(new SendChatDto(roomId, sendUserId, message));
+                participantsService.updateLastReadChat(roomId, sendUserId, lastChatId);
             } else {
+                List<ChatDto> chatList = chatService.getChatList(roomId);
+
+                if (!chatList.isEmpty()) {
+                    int lastChatId = chatList.get(chatList.size() - 1).getChatId();
+                    participantsService.updateLastReadChat(roomId, sendUserId, lastChatId);
+                }
                 chatService.readChat(new SendChatDto(roomId, sendUserId, ""));
             }
 
@@ -113,23 +119,21 @@ public class WebSocketHandler extends TextWebSocketHandler {
             SocketResponseDto sendUserDto = new SocketResponseDto(sendRoomList, chatResponseDto);
             sessions.get(sendUserId).sendMessage(new TextMessage(objectMapper.writeValueAsString(sendUserDto)));
 
-            if (sessions.containsKey(receiveUserId) && sessions.get(receiveUserId).isOpen()) {
-                List<RoomDto> receiveRoomList = getRoomListByUserId(receiveUserId);
-                SocketResponseDto receiveUserDto = new SocketResponseDto(receiveRoomList, chatResponseDto);
-                sessions.get(receiveUserId).sendMessage(new TextMessage(objectMapper.writeValueAsString(receiveUserDto)));
+            for (Integer receiveUserId : receiveUserIdList) {
+                if (sessions.containsKey(receiveUserId) && sessions.get(receiveUserId).isOpen()) {
+                    List<RoomDto> receiveRoomList = getRoomListByUserId(receiveUserId);
+                    SocketResponseDto receiveUserDto = new SocketResponseDto(receiveRoomList, chatResponseDto);
+                    sessions.get(receiveUserId).sendMessage(new TextMessage(objectMapper.writeValueAsString(receiveUserDto)));
+                }
             }
-        } catch (Exception e) {
-
-        }
+        } catch (Exception e) {}
     }
 
-    public int getReceiveUserId(String identifier, int sendUserId) {
-        String[] userIds = identifier.split("-");
+    public List<Integer> getReceiveUserIdList(int roomId, int sendUserId) {
+        List<Integer> participants = participantsService.getParticipantsByRoomId(roomId);
+        List<Integer> receiveUserIdList = participants.stream().filter(userId -> userId != sendUserId).collect(Collectors.toList());
 
-        if (Integer.parseInt(userIds[0]) == sendUserId) {
-            return Integer.parseInt(userIds[1]);
-        }
-        return Integer.parseInt(userIds[0]);
+        return receiveUserIdList;
     }
 
     public List<RoomDto> getRoomListByUserId(int userId) {

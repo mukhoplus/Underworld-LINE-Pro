@@ -5,43 +5,26 @@
 
     <select id="getChatList" resultType="com.mukho.linepro.dto.chat.ChatDto">
         SELECT
-            send_user_id sendUserId,
-            message,
-            not_read notRead,
-            send_at sendAt
-        FROM
-            chat
-        WHERE
-            room_id = #{roomId}
-        ORDER BY
-            send_at
+            c.chat_id as chatId,
+            c.send_user_id as sendUserId,
+            c.message,
+            c.send_at as sendAt,
+            (SELECT COUNT(*)
+                FROM room_participants rp
+                WHERE rp.room_id = c.room_id
+                AND rp.last_read_chat_id &lt;= c.chat_id) as notRead
+        FROM chat c
+        WHERE c.room_id = #{roomId}
+        ORDER BY c.send_at ASC
     </select>
 
-    <insert id="sendChat">
-        INSERT INTO
-            chat(room_id, send_user_id, message, not_read)
-        VALUES
-            (#{roomId}, #{sendUserId}, #{message}, 1)
+    <insert id="sendChat" parameterType="com.mukho.linepro.domain.Chat" 
+            useGeneratedKeys="true" keyProperty="chatId" keyColumn="chat_id">
+        INSERT INTO chat (room_id, send_user_id, message)
+        VALUES (#{roomId}, #{sendUserId}, #{message})
+        <selectKey resultType="int" keyProperty="chatId" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
     </insert>
-
-    <insert id="sendSelfChat">
-        INSERT INTO
-            chat(room_id, send_user_id, message, not_read)
-        VALUES
-            (#{roomId}, #{sendUserId}, #{message}, 0)
-    </insert>
-
-    <update id="readChat">
-        UPDATE
-            chat
-        SET
-            not_read = 0
-        WHERE
-            room_id = #{roomId}
-          AND
-            send_user_id != #{sendUserId}
-          AND
-            not_read = 1
-    </update>
 
 </mapper>

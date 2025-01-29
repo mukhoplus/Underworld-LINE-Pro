@@ -1,5 +1,5 @@
-const dayjs = require("dayjs");
-const koLocale = require("dayjs/locale/ko");
+import dayjs from "dayjs";
+import koLocale from "dayjs/locale/ko";
 
 dayjs.locale(koLocale);
 

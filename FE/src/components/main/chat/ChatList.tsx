@@ -113,7 +113,7 @@ const ChatList: React.FC<ChatListProps> = ({
                     minWidth: "20%",
                   }}
                 >
-                  {chat.notRead}
+                  {chat.notRead ? chat.notRead : ""}
                   <br />
                   {getChatTime(chat.sendAt)}
                 </p>
@@ -146,7 +146,7 @@ const ChatList: React.FC<ChatListProps> = ({
                     minWidth: "20%",
                   }}
                 >
-                  {chat.notRead}
+                  {chat.notRead ? chat.notRead : ""}
                   <br />
                   {getChatTime(chat.sendAt)}
                 </p>

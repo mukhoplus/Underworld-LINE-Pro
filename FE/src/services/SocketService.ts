@@ -49,7 +49,6 @@ const SocketService = {
         SocketService.read(roomId, userId);
         return;
       }
-
       setChatList(chatList);
     };
 

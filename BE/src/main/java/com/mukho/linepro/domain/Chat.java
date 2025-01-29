@@ -1,4 +1,4 @@
-package com.mukho.linepro.dto.chat;
+package com.mukho.linepro.domain;
 
 import java.time.LocalDateTime;
 
@@ -9,9 +9,12 @@ import lombok.Data;
 
 @Data
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-public class ReadReceipts {
-    private Integer chatId;
-    private Integer userId;
+public class Chat {
+    int chatId;
+    int roomId;
+    int sendUserId;
+    String message;
+    boolean notRead;
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "KST")
-    private LocalDateTime readAt;
+    LocalDateTime sendAt;
 }

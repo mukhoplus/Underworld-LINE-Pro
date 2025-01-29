@@ -10,6 +10,7 @@ import com.mukho.linepro.handler.WebSocketHandler;
 import com.mukho.linepro.interceptor.HttpSessionHandshakeInterceptor;
 import com.mukho.linepro.service.ChatService;
 import com.mukho.linepro.service.RoomService;
+import com.mukho.linepro.service.RoomParticipantsService;
 
 @Configuration
 @EnableWebSocket
@@ -21,9 +22,12 @@ public class WebSocketConfig implements WebSocketConfigurer {
     @Autowired
     private ChatService chatService;
 
+    @Autowired
+    private RoomParticipantsService participantsService;
+
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(new WebSocketHandler(roomService, chatService), "/socket")
+        registry.addHandler(new WebSocketHandler(roomService, chatService, participantsService), "/socket")
                 .setAllowedOrigins("*")
                 .addInterceptors(new HttpSessionHandshakeInterceptor());
     }

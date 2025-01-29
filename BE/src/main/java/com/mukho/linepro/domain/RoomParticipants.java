@@ -1,4 +1,4 @@
-package com.mukho.linepro.dto.room;
+package com.mukho.linepro.domain;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
@@ -9,4 +9,5 @@ import lombok.Data;
 public class RoomParticipants {
     private Integer roomId;
     private Integer userId;
+    private Integer lastReadChatId;
 }
