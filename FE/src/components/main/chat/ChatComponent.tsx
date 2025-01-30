@@ -5,17 +5,17 @@ import { axiosRequest } from "../../../services/AxiosService";
 import { isInNotReadMessages } from "../../../utils/MessageUtil";
 import ChatBlank from "./ChatBlnak";
 import ChatList from "./ChatList";
-import { Chat } from "../../../interfaces/Chat";
+import { ChatDto } from "../../../interfaces/Chat";
 import "./ChatComponent.css";
 
 interface ChatComponentProps {
   userId: number;
   roomId: number;
   setRoomId: (id: number) => void;
-  chatList: Chat[];
+  chatList: ChatDto[];
   roomList: any[];
   setRoomList: (list: any[]) => void;
-  setChatList: (list: Chat[]) => void;
+  setChatList: (list: ChatDto[]) => void;
 }
 
 const ChatComponent: React.FC<ChatComponentProps> = ({
@@ -53,7 +53,7 @@ const ChatComponent: React.FC<ChatComponentProps> = ({
 
     await axiosRequest("get", `/chat/${roomId}`)
       .then((response) => {
-        const newChatList: Chat[] = response.data;
+        const newChatList: ChatDto[] = response.data;
         if (isInNotReadMessages(userId, newChatList)) {
           SocketService.read(roomId, userId);
           return;

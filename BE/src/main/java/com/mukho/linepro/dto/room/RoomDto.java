@@ -11,6 +11,7 @@ import lombok.Data;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class RoomDto {
     private int roomId;
+    private String roomType;
     private String roomName;
     private String lastMessage;
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "KST")

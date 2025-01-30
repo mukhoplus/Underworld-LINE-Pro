@@ -59,7 +59,13 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public List<RoomDto> getRoomListByUserId(int userId) {
-        return roomMapper.getRoomListByUserId(userId);
+        List<RoomDto> roomList = roomMapper.getRoomListByUserId(userId);
+
+        for (RoomDto room : roomList) {
+            room.setRoomName(getRoomName(room.getRoomId(), userId));
+        }
+
+        return roomList;
     }
 
     @Override
@@ -73,6 +79,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
+    @Transactional
     public int getRoomIdByUserId(int userId) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         HttpSession session = request.getSession(false);
@@ -104,13 +111,15 @@ public class RoomServiceImpl implements RoomService {
 
         if (RoomType.fromString(room.getRoomType()) == RoomType.GROUP) {
             return room.getName();
+        } else if (RoomType.fromString(room.getRoomType()) == RoomType.ME) {
+            return userMapper.getName(userId);
         } else {
             List<Integer> participants = participantsMapper.getParticipantsByRoomId(roomId);
             int otherUserId = participants.stream()
                     .filter(id -> id != userId)
                     .findFirst()
                     .orElse(0);
-            return String.valueOf(otherUserId);
+            return userMapper.getName(otherUserId);
         }
     }
 
@@ -134,7 +143,7 @@ public class RoomServiceImpl implements RoomService {
             room.setName(userMapper.getName(id1));
         } else {
             room.setRoomType(RoomType.ONE_TO_ONE);
-            room.setName(userMapper.getName(id2));
+            room.setName("");
         }
 
         room.setLastMessage("");

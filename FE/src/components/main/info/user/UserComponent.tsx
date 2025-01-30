@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Badge, Avatar } from "antd";
-
 import { axiosRequest } from "../../../../services/AxiosService";
 import { LongStringUtil } from "../../../../utils/LongStringUtil";
 import { UserListDto } from "../../../../interfaces/User";
@@ -11,10 +10,14 @@ const UserComponent = ({
   userId,
   userList,
   setRoomId,
+  roomList,
+  setRoomList,
 }: {
   userId: number;
   userList: any[];
-  setRoomId: (roomId: number) => void;
+  setRoomId: (id: number) => void;
+  roomList: any[];
+  setRoomList: (list: any[]) => void;
 }) => {
   const [userInfo, setUserInfo] = useState<UserListDto[]>([]);
 
@@ -38,7 +41,15 @@ const UserComponent = ({
   const handleChatIdToRoomId = async (userId: any) => {
     await axiosRequest("get", `/room/user/${userId}`)
       .then((response: any) => {
+        const responseRoomId = response.data;
         setRoomId(response.data);
+
+        // 신규 생성 또는 방 목록이 없을 경우 방 목록 갱신
+        if (!roomList.find((room: any) => room.roomId === responseRoomId)) {
+          axiosRequest("get", `/room/list/${userId}`).then((response) => {
+            setRoomList(response.data);
+          });
+        }
       })
       .catch(() => {});
   };

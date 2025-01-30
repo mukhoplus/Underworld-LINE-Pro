@@ -4,6 +4,7 @@ import com.mukho.linepro.mapper.RoomParticipantsMapper;
 import com.mukho.linepro.service.RoomParticipantsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -19,6 +20,7 @@ public class RoomParticipantsServiceImpl implements RoomParticipantsService {
     }
 
     @Override
+    @Transactional
     public void updateLastReadChat(int roomId, int userId, int chatId) {
         participantsMapper.updateLastReadChat(roomId, userId, chatId);
     }

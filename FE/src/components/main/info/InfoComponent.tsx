@@ -125,14 +125,11 @@ const InfoComponent: React.FC<InfoComponentProps> = ({
               userId={userId}
               userList={userList}
               setRoomId={setRoomId}
+              roomList={roomList}
+              setRoomList={setRoomList}
             />
           ) : (
-            <RoomComponent
-              userId={userId}
-              setRoomId={setRoomId}
-              roomList={[]}
-              // BE 수정 후:  roomList={roomList}
-            />
+            <RoomComponent setRoomId={setRoomId} roomList={roomList} />
           )}
         </ContentCol>
       </InfoWrapper>

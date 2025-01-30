@@ -1,7 +1,7 @@
 import { atom } from "recoil";
 import { User } from "../interfaces/User";
-import { Room } from "../interfaces/Room";
-import { Chat } from "../interfaces/Chat";
+import { RoomDto } from "../interfaces/Room";
+import { ChatDto } from "../interfaces/Chat";
 
 export const isSessionState = atom<boolean>({
   key: "isSessionState",
@@ -18,7 +18,7 @@ export const userListState = atom<User[]>({
   default: [],
 });
 
-export const roomListState = atom<Room[]>({
+export const roomListState = atom<RoomDto[]>({
   key: "roomListState",
   default: [],
 });
@@ -28,7 +28,7 @@ export const roomIdState = atom<number>({
   default: 0,
 });
 
-export const chatListState = atom<Chat[]>({
+export const chatListState = atom<ChatDto[]>({
   key: "chatListState",
   default: [],
 });

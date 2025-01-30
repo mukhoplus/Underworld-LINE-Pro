@@ -10,6 +10,7 @@ export interface Chat {
 }
 
 export interface ChatDto {
+  chatId: number;
   sendUserId: number;
   message: string;
   notRead: number;

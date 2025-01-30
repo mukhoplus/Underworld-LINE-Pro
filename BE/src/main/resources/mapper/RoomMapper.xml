@@ -22,16 +22,29 @@
     <select id="getRoomListByUserId" resultType="com.mukho.linepro.dto.room.RoomDto">
         SELECT
             r.room_id as roomId,
+            r.room_type as roomType,
             r.name as roomName,
             r.last_message as lastMessage,
             r.updated_at as updatedAt,
             rp.last_read_chat_id as lastReadChatId,
-            (SELECT COUNT(*)
-             FROM chat c
-             WHERE c.room_id = r.room_id
-             AND c.chat_id > rp.last_read_chat_id) as notReadCount
+            (SELECT
+                 CASE
+                     WHEN EXISTS (
+                         SELECT 1 FROM chat c
+                         WHERE c.room_id = r.room_id
+                           AND c.chat_id > COALESCE(rp.last_read_chat_id, 0)
+                           AND c.send_user_id != #{userId}
+                     ) THEN
+                         (SELECT COUNT(*)
+                          FROM chat c
+                          WHERE c.room_id = r.room_id
+                            AND c.chat_id > COALESCE(rp.last_read_chat_id, 0)
+                            AND c.send_user_id != #{userId})
+                     ELSE 0
+                 END
+            ) as notReadCount
         FROM room r
-        JOIN room_participants rp ON r.room_id = rp.room_id
+                 JOIN room_participants rp ON r.room_id = rp.room_id
         WHERE rp.user_id = #{userId}
         ORDER BY r.updated_at DESC
     </select>

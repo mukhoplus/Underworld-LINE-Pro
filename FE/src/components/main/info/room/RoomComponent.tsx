@@ -1,19 +1,19 @@
 import React, { useCallback } from "react";
 import { Avatar, Badge } from "antd";
+import { TeamOutlined } from "@ant-design/icons";
 import { getRoomDateTime } from "../../../../utils/DateTimeUtil";
 import { LongStringUtil } from "../../../../utils/LongStringUtil";
 import "./RoomComponent.css";
 import "../../chat/ChatComponent.css";
-import { RoomDto } from "src/interfaces/Room";
+import { RoomDto, RoomType } from "src/interfaces/Room";
 
 interface RoomComponentProps {
-  userId: number;
   roomList: RoomDto[];
   setRoomId: (id: number) => void;
 }
 
 const RoomComponent: React.FC<RoomComponentProps> = React.memo(
-  ({ userId, roomList, setRoomId }) => {
+  ({ roomList, setRoomId }) => {
     const handleRoomClick = useCallback(
       (roomId: number) => () => setRoomId(roomId),
       [setRoomId]
@@ -47,7 +47,7 @@ const RoomComponent: React.FC<RoomComponentProps> = React.memo(
                   className="name"
                   style={{ display: "flex", alignItems: "center" }}
                 >
-                  {room.userId === userId ? (
+                  {room.roomType === RoomType.ME ? (
                     <>
                       <Badge
                         count="나"
@@ -56,6 +56,17 @@ const RoomComponent: React.FC<RoomComponentProps> = React.memo(
                       <span style={{ margin: "0 4px" }}>
                         {LongStringUtil(room.roomName, 15)}
                       </span>
+                    </>
+                  ) : room.roomType === RoomType.GROUP ? (
+                    <>
+                      <Badge
+                        count={<TeamOutlined style={{ color: "#fff" }} />}
+                        style={{
+                          backgroundColor: "#1890ff",
+                          marginRight: "4px",
+                        }}
+                      />
+                      <span>{LongStringUtil(room.roomName, 15)}</span>
                     </>
                   ) : (
                     <span>{LongStringUtil(room.roomName, 15)}</span>

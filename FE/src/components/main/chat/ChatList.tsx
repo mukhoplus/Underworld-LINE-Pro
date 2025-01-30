@@ -1,18 +1,19 @@
+import { useCallback } from "react";
 import { axiosRequest } from "../../../services/AxiosService";
 import { Avatar } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { getChatDate, getChatTime } from "../../../utils/DateTimeUtil";
 import { LongStringUtil } from "../../../utils/LongStringUtil";
-import { Chat } from "../../../interfaces/Chat";
+import { ChatDto } from "../../../interfaces/Chat";
 
 interface ChatListProps {
   userId: number;
-  chatList: Chat[];
+  chatList: ChatDto[];
   roomId: number;
   setRoomId: (roomId: number) => void;
   roomList: any[];
   setRoomList: (roomList: any[]) => void;
-  setChatList: (chatList: Chat[]) => void;
+  setChatList: (chatList: ChatDto[]) => void;
   chatListRef: React.RefObject<HTMLDivElement | null>;
   dateOutput: { [key: string]: boolean };
 }
@@ -28,28 +29,16 @@ const ChatList: React.FC<ChatListProps> = ({
   chatListRef,
   dateOutput,
 }) => {
-  const getRoomNameByRoomId = (roomList: any, roomId: number) => {
+  const getRoomNameByRoomId = useCallback((roomList: any, roomId: number) => {
     const getRoomNameInRoomList = (roomList: any, roomId: number) => {
-      return roomList.find((room: any) => room.roomId === roomId);
+      const room = roomList.find((room: any) => room.roomId === roomId);
+      return room?.roomName || "";
     };
 
     if (roomId === 0) return "";
-    const data = getRoomNameInRoomList(roomList, roomId);
 
-    if (!data) {
-      axiosRequest("get", `/room/list/${userId}`)
-        .then((response) => {
-          setRoomList(response.data);
-          return response.data.roomName || "";
-        })
-        .catch((error) => {
-          setRoomList([]);
-          return "";
-        });
-    }
-
-    return data.roomName;
-  };
+    return getRoomNameInRoomList(roomList, roomId);
+  }, []);
 
   const isChatDateInDateOutput = (date: any) => {
     return dateOutput.hasOwnProperty(getChatDate(date));
@@ -81,7 +70,7 @@ const ChatList: React.FC<ChatListProps> = ({
         </span>
       </div>
       <div id="chat-list" ref={chatListRef} className="custom-scroll chat-list">
-        {chatList.map((chat: Chat, index: number) => (
+        {chatList.map((chat: ChatDto, index: number) => (
           <div className="chat-line" key={`chat-${index}`}>
             {!isChatDateInDateOutput(chat.sendAt) && (
               <div className="date-line" key={`date-${index}`}>

@@ -1,9 +1,11 @@
 export interface RoomParticipants {
   roomId: number;
   userId: number;
+  lastReadChatId: number;
 }
 
 export enum RoomType {
+  ME = "ME",
   ONE_TO_ONE = "ONE_TO_ONE",
   GROUP = "GROUP",
 }
@@ -18,10 +20,11 @@ export interface Room {
 
 export interface RoomDto {
   roomId: number;
-  userId: number;
+  roomType: RoomType;
   roomName: string;
   lastMessage: string;
   updatedAt: string; // ISO 8601 형식의 날짜 문자열
+  lastReadChatId: number;
   notReadCount: number;
 }
 

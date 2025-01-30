@@ -68,7 +68,7 @@ const Main: React.FC = () => {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    setAllNotReadCount(0); // BE 수정 후: getAllNotReadCount(roomList)
+    setAllNotReadCount(getAllNotReadCount(roomList));
   }, [roomList, getAllNotReadCount]);
 
   const infoProps = useMemo(
