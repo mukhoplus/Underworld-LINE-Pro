@@ -3,8 +3,8 @@ import { Input, Button } from "antd";
 import SocketService from "../../../services/SocketService";
 import { axiosRequest } from "../../../services/AxiosService";
 import { isInNotReadMessages } from "../../../utils/MessageUtil";
-import ChatBlank from "./ChatBlnak";
-import ChatList from "./ChatList";
+import ChatBlank from "./list/ChatBlnak";
+import ChatList from "./list/ChatList";
 import { ChatDto } from "../../../interfaces/Chat";
 import "./ChatComponent.css";
 
@@ -14,7 +14,6 @@ interface ChatComponentProps {
   setRoomId: (id: number) => void;
   chatList: ChatDto[];
   roomList: any[];
-  setRoomList: (list: any[]) => void;
   setChatList: (list: ChatDto[]) => void;
 }
 
@@ -24,7 +23,6 @@ const ChatComponent: React.FC<ChatComponentProps> = ({
   setRoomId,
   chatList,
   roomList,
-  setRoomList,
   setChatList,
 }) => {
   const [inputMessage, setInputMessage] = useState<string>("");
@@ -54,10 +52,12 @@ const ChatComponent: React.FC<ChatComponentProps> = ({
     await axiosRequest("get", `/chat/${roomId}`)
       .then((response) => {
         const newChatList: ChatDto[] = response.data;
+
         if (isInNotReadMessages(userId, newChatList)) {
           SocketService.read(roomId, userId);
           return;
         }
+
         setChatList(newChatList);
       })
       .catch(() => {});
@@ -85,7 +85,7 @@ const ChatComponent: React.FC<ChatComponentProps> = ({
         element.scrollTop = element.scrollHeight;
       }
     }
-  }, [roomId]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [userId, roomId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (chatListRef.current) {
@@ -98,53 +98,49 @@ const ChatComponent: React.FC<ChatComponentProps> = ({
 
   return (
     <>
-      <div>
-        {roomId === 0 ? (
-          <ChatBlank />
-        ) : (
-          <>
-            <div className="chat-component">
-              <ChatList
-                userId={userId}
-                chatList={chatList}
-                roomId={roomId}
-                setRoomId={setRoomId}
-                roomList={roomList}
-                setChatList={setChatList}
-                chatListRef={chatListRef}
-                dateOutput={dateOutput}
-              />
-              <div
-                style={{
-                  display: "flex",
-                  margin: "3.5px 0px",
-                }}
-              >
-                <Input.TextArea
-                  id="chat-input"
-                  placeholder=""
-                  value={inputMessage}
-                  onChange={handleInputChange}
-                  style={{
-                    flex: "1",
-                    marginRight: "10px",
-                  }}
-                  autoSize={{ minRows: 1, maxRows: 1 }}
-                  onKeyPress={handleEnterKey}
-                />
-                <Button
-                  className="submit-btn"
-                  type="primary"
-                  onClick={handleSendMessage}
-                  disabled={!sendMessageValidation()}
-                >
-                  전송
-                </Button>
-              </div>
-            </div>
-          </>
-        )}
-      </div>
+      {roomId === 0 ? (
+        <ChatBlank />
+      ) : (
+        <div className="chat-component">
+          <ChatList
+            userId={userId}
+            chatList={chatList}
+            roomId={roomId}
+            setRoomId={setRoomId}
+            roomList={roomList}
+            setChatList={setChatList}
+            chatListRef={chatListRef}
+            dateOutput={dateOutput}
+          />
+          <div
+            style={{
+              display: "flex",
+              margin: "3.5px 0px",
+            }}
+          >
+            <Input.TextArea
+              id="chat-input"
+              placeholder=""
+              value={inputMessage}
+              onChange={handleInputChange}
+              style={{
+                flex: "1",
+                marginRight: "10px",
+              }}
+              autoSize={{ minRows: 1, maxRows: 1 }}
+              onKeyPress={handleEnterKey}
+            />
+            <Button
+              className="submit-btn"
+              type="primary"
+              onClick={handleSendMessage}
+              disabled={!sendMessageValidation()}
+            >
+              전송
+            </Button>
+          </div>
+        </div>
+      )}
     </>
   );
 };

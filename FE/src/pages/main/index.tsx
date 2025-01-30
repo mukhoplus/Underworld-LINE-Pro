@@ -56,8 +56,6 @@ const Main: React.FC = () => {
     if (userId !== 0) {
       SocketService.connect(
         `ws://${BaseURL}/api/v2/socket`,
-        userId,
-        roomId,
         setRoomList,
         setChatList
       );
@@ -65,7 +63,11 @@ const Main: React.FC = () => {
     return () => {
       SocketService.close();
     };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [setChatList, setRoomList, userId]);
+
+  useEffect(() => {
+    SocketService.initialize(() => ({ roomId, userId }));
+  }, [userId, roomId]);
 
   useEffect(() => {
     setAllNotReadCount(getAllNotReadCount(roomList));

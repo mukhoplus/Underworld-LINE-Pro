@@ -5,13 +5,12 @@ import {
   MessageOutlined,
   LogoutOutlined,
 } from "@ant-design/icons";
+import styled from "styled-components";
 import UserComponent from "./user/UserComponent";
 import RoomComponent from "./room/RoomComponent";
 import { axiosRequest } from "../../../services/AxiosService";
 import SocketService from "../../../services/SocketService";
 import "./InfoComponent.css";
-
-import styled from "styled-components";
 
 interface InfoComponentProps {
   userId: number;

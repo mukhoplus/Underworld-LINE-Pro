@@ -34,9 +34,4 @@ public class ChatServiceImpl implements ChatService {
         return chat.getChatId();
     }
 
-    @Override
-    public void readChat(SendChatDto sendChatDto) {
-        chatMapper.readChat(sendChatDto);
-    }
-
 }

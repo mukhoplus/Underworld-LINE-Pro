@@ -8,7 +8,7 @@
     </insert>
 
     <update id="updateLastReadChat">
-        UPDATE room_participants 
+        UPDATE room_participants
         SET last_read_chat_id = #{chatId}
         WHERE room_id = #{roomId} AND user_id = #{userId}
     </update>

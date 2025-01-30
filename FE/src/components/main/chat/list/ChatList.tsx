@@ -1,9 +1,9 @@
 import { useCallback } from "react";
 import { Avatar } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
-import { getChatDate, getChatTime } from "../../../utils/DateTimeUtil";
-import { LongStringUtil } from "../../../utils/LongStringUtil";
-import { ChatDto } from "../../../interfaces/Chat";
+import { getChatDate, getChatTime } from "../../../../utils/DateTimeUtil";
+import { LongStringUtil } from "../../../../utils/LongStringUtil";
+import { ChatDto } from "../../../../interfaces/Chat";
 
 interface ChatListProps {
   userId: number;

@@ -106,7 +106,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
                     int lastChatId = chatList.get(chatList.size() - 1).getChatId();
                     participantsService.updateLastReadChat(roomId, sendUserId, lastChatId);
                 }
-                chatService.readChat(new SendChatDto(roomId, sendUserId, ""));
             }
 
             objectMapper = new ObjectMapper();

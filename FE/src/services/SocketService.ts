@@ -23,11 +23,14 @@ interface WebSocketData {
 
 const SocketService = {
   socket: null as WebSocket | null,
+  getState: null as (() => { roomId: number; userId: number }) | null,
+
+  initialize: (getState: () => { roomId: number; userId: number }) => {
+    SocketService.getState = getState;
+  },
 
   connect: (
     url: string,
-    userId: number,
-    roomId: number,
     setRoomList: (roomList: any[]) => void,
     setChatList: (chatList: any[]) => void
   ) => {
@@ -36,6 +39,9 @@ const SocketService = {
     SocketService.socket.onopen = () => {};
 
     SocketService.socket.onmessage = (event: MessageEvent) => {
+      if (!SocketService.getState) return;
+
+      const { userId, roomId } = SocketService.getState();
       const data = JSON.parse(event.data) as WebSocketData;
       const { roomList, chatResponseDto } = data;
       const { roomId: responseRoomId, chatList } = chatResponseDto;
@@ -49,6 +55,7 @@ const SocketService = {
         SocketService.read(roomId, userId);
         return;
       }
+
       setChatList(chatList);
     };
 
