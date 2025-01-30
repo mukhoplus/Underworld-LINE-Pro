@@ -1,0 +1,12 @@
+.user-list {
+  width: 389px;
+  height: 600px;
+  margin: 0 auto;
+  flex-direction: column;
+  overflow-y: auto;
+  scroll-behavior: auto;
+}
+
+.user:hover {
+  background-color: gainsboro;
+}
