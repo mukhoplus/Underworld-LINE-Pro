@@ -1,9 +1,10 @@
 import React, { useEffect } from "react";
 import { useRecoilValue } from "recoil";
-import { userIdState, isSessionState } from "./stores/atoms";
+
 import { useAuth } from "./hooks/useAuth";
 import Hello from "./pages/hello";
 import Main from "./pages/main";
+import { isSessionState, userIdState } from "./stores/atoms";
 
 const App: React.FC = () => {
   const { checkSession } = useAuth();

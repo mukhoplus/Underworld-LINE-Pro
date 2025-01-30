@@ -1,3 +1,6 @@
+import { ChatDto } from "src/interfaces/Chat";
+import { RoomDto } from "src/interfaces/Room";
+
 import { isInNotReadMessages } from "../utils/MessageUtil";
 
 interface SendChatDto {
@@ -7,17 +10,17 @@ interface SendChatDto {
 }
 
 interface SocketSendDto {
-  type: string;
+  type: "chat" | "read";
   data: SendChatDto;
 }
 
 interface ChatResponseDto {
   roomId: number;
-  chatList: any[];
+  chatList: ChatDto[];
 }
 
 interface WebSocketData {
-  roomList: any[];
+  roomList: RoomDto[];
   chatResponseDto: ChatResponseDto;
 }
 
@@ -31,8 +34,8 @@ const SocketService = {
 
   connect: (
     url: string,
-    setRoomList: (roomList: any[]) => void,
-    setChatList: (chatList: any[]) => void
+    setRoomList: (roomList: RoomDto[]) => void,
+    setChatList: (chatList: ChatDto[]) => void
   ) => {
     SocketService.socket = new WebSocket(url);
 
@@ -51,7 +54,7 @@ const SocketService = {
       if (roomId === 0) return;
       if (roomId !== responseRoomId) return;
 
-      if (isInNotReadMessages(userId, roomList)) {
+      if (isInNotReadMessages(roomList)) {
         SocketService.read(roomId, userId);
         return;
       }

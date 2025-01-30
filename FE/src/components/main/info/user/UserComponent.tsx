@@ -1,10 +1,13 @@
-import { useState, useEffect } from "react";
-import { Badge, Avatar } from "antd";
-import { axiosRequest } from "../../../../services/AxiosService";
-import { LongStringUtil } from "../../../../utils/LongStringUtil";
-import { UserListDto } from "../../../../interfaces/User";
 import "./UserComponent.css";
 import "../../chat/ChatComponent.css";
+
+import { Avatar, Badge } from "antd";
+import { useEffect, useState } from "react";
+import { RoomDto } from "src/interfaces/Room";
+
+import { UserListDto } from "../../../../interfaces/User";
+import { axiosRequest } from "../../../../services/AxiosService";
+import { LongStringUtil } from "../../../../utils/LongStringUtil";
 
 const UserComponent = ({
   userId,
@@ -14,19 +17,19 @@ const UserComponent = ({
   setRoomList,
 }: {
   userId: number;
-  userList: any[];
+  userList: UserListDto[];
   setRoomId: (id: number) => void;
-  roomList: any[];
-  setRoomList: (list: any[]) => void;
+  roomList: RoomDto[];
+  setRoomList: (list: RoomDto[]) => void;
 }) => {
   const [userInfo, setUserInfo] = useState<UserListDto[]>([]);
 
   const getMyInfo = () => {
-    return userList.find((item: any) => item.userId === userId);
+    return userList.find((item: UserListDto) => item.userId === userId);
   };
 
   const getFriendInfo = () => {
-    return userList.filter((item: any) => item.userId !== userId);
+    return userList.filter((item: UserListDto) => item.userId !== userId);
   };
 
   const handleUserInfo = () => {
@@ -35,17 +38,17 @@ const UserComponent = ({
     const myInfo = getMyInfo();
     const friendInfo = getFriendInfo();
 
-    setUserInfo([{ ...myInfo }, ...friendInfo]);
+    setUserInfo([{ ...myInfo } as UserListDto, ...friendInfo]);
   };
 
-  const handleChatIdToRoomId = async (userId: any) => {
+  const handleChatIdToRoomId = async (userId: Number) => {
     await axiosRequest("get", `/room/user/${userId}`)
       .then((response: any) => {
         const responseRoomId = response.data;
         setRoomId(response.data);
 
         // 신규 생성 또는 방 목록이 없을 경우 방 목록 갱신
-        if (!roomList.find((room: any) => room.roomId === responseRoomId)) {
+        if (!roomList.find((room: RoomDto) => room.roomId === responseRoomId)) {
           axiosRequest("get", `/room/list/${userId}`).then((response) => {
             setRoomList(response.data);
           });
@@ -60,7 +63,7 @@ const UserComponent = ({
 
   return (
     <div className="user-list custom-scroll">
-      {userInfo.map((user: any) => (
+      {userInfo.map((user: UserListDto) => (
         <div
           className="user"
           key={user.userId}

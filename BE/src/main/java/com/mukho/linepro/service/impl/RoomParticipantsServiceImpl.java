@@ -15,11 +15,6 @@ public class RoomParticipantsServiceImpl implements RoomParticipantsService {
     private RoomParticipantsMapper participantsMapper;
 
     @Override
-    public void addParticipant(int roomId, int userId) {
-        participantsMapper.addParticipant(roomId, userId);
-    }
-
-    @Override
     @Transactional
     public void updateLastReadChat(int roomId, int userId, int chatId) {
         participantsMapper.updateLastReadChat(roomId, userId, chatId);
@@ -30,13 +25,4 @@ public class RoomParticipantsServiceImpl implements RoomParticipantsService {
         return participantsMapper.getParticipantsByRoomId(roomId);
     }
 
-    @Override
-    public int getLastReadChatId(int roomId, int userId) {
-        return participantsMapper.getLastReadChatId(roomId, userId);
-    }
-
-    @Override
-    public int getUnreadCount(int roomId, int userId) {
-        return participantsMapper.getUnreadCount(roomId, userId);
-    }
 }

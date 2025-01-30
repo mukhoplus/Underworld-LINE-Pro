@@ -1,16 +1,17 @@
-import React, { useState } from "react";
-import { Form, Input, Button } from "antd";
+import "./Hello.css";
+
 import {
   EyeInvisibleOutlined,
   EyeOutlined,
   IdcardOutlined,
   LockOutlined,
 } from "@ant-design/icons";
+import { Button, Form, Input } from "antd";
+import React, { useState } from "react";
 import styled from "styled-components";
-import { useAuth } from "../../hooks/useAuth";
-import { warningModal, errorModal } from "../../utils/ModalUtil";
 
-import "./Hello.css";
+import { useAuth } from "../../hooks/useAuth";
+import { errorModal, warningModal } from "../../utils/ModalUtil";
 
 const LoginComponent: React.FC<{ setPage: (page: number) => void }> = ({
   setPage,

@@ -1,19 +1,20 @@
-import React, { useState } from "react";
-import { Form, Input, Button } from "antd";
+import "./Hello.css";
+
 import {
   EyeInvisibleOutlined,
   EyeOutlined,
   IdcardOutlined,
-  UserOutlined,
   LockOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
+import { Button, Form, Input } from "antd";
+import React, { useState } from "react";
 import styled from "styled-components";
-import { warningModal } from "../../utils/ModalUtil";
-import { axiosRequest } from "../../services/AxiosService";
-import { SignupDto } from "../../interfaces/User";
-import { useAuth } from "../../hooks/useAuth";
 
-import "./Hello.css";
+import { useAuth } from "../../hooks/useAuth";
+import { SignupDto } from "../../interfaces/User";
+import { axiosRequest } from "../../services/AxiosService";
+import { warningModal } from "../../utils/ModalUtil";
 
 interface SignupComponentProps {
   setPage: (page: number) => void;

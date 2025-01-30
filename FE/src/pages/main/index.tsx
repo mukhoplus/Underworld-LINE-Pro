@@ -1,19 +1,21 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import { Col, Row } from "antd";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { Row, Col } from "antd";
-import {
-  userIdState,
-  userListState,
-  roomIdState,
-  roomListState,
-  chatListState,
-} from "../../stores/atoms";
+import { RoomDto } from "src/interfaces/Room";
+import styled from "styled-components";
+
 import ChatComponent from "../../components/main/chat/ChatComponent";
 import InfoComponent from "../../components/main/info/InfoComponent";
 import { axiosRequest } from "../../services/AxiosService";
 import { BaseURL } from "../../services/HostingService";
 import SocketService from "../../services/SocketService";
-import styled from "styled-components";
+import {
+  chatListState,
+  roomIdState,
+  roomListState,
+  userIdState,
+  userListState,
+} from "../../stores/atoms";
 
 const Main: React.FC = () => {
   const userId = useRecoilValue(userIdState);
@@ -29,7 +31,7 @@ const Main: React.FC = () => {
 
   const [allNotReadCount, setAllNotReadCount] = useState<number>(0);
 
-  const getAllNotReadCount = useCallback((roomList: any[]) => {
+  const getAllNotReadCount = useCallback((roomList: RoomDto[]) => {
     return roomList.reduce((acc, cur) => acc + (cur.notReadCount || 0), 0);
   }, []);
 

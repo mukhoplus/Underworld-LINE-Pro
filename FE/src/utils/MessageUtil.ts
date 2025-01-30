@@ -1,5 +1,5 @@
-export const isInNotReadMessages = (userId: number, newMessages: any) => {
-  return newMessages.some(
-    (message: any) => message.sendUserId !== userId && message.notReadCount > 0
-  );
+import { RoomDto } from "src/interfaces/Room";
+
+export const isInNotReadMessages = (newMessages: RoomDto[]) => {
+  return newMessages.some((message: RoomDto) => message.notReadCount > 0);
 };

@@ -1,6 +1,6 @@
-import React from "react";
-import { Modal } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
+import { Modal } from "antd";
+import React from "react";
 
 export const confirmModal = (title: string, content: string) => {
   return new Promise((resolve) => {

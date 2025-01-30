@@ -1,19 +1,22 @@
-import { useState, useEffect, useRef } from "react";
-import { Input, Button } from "antd";
-import SocketService from "../../../services/SocketService";
+import "./ChatComponent.css";
+
+import { Button, Input } from "antd";
+import { useEffect, useRef, useState } from "react";
+import { RoomDto } from "src/interfaces/Room";
+
+import { ChatDto } from "../../../interfaces/Chat";
 import { axiosRequest } from "../../../services/AxiosService";
+import SocketService from "../../../services/SocketService";
 import { isInNotReadMessages } from "../../../utils/MessageUtil";
 import ChatBlank from "./list/ChatBlnak";
 import ChatList from "./list/ChatList";
-import { ChatDto } from "../../../interfaces/Chat";
-import "./ChatComponent.css";
 
 interface ChatComponentProps {
   userId: number;
   roomId: number;
   setRoomId: (id: number) => void;
   chatList: ChatDto[];
-  roomList: any[];
+  roomList: RoomDto[];
   setChatList: (list: ChatDto[]) => void;
 }
 
@@ -53,7 +56,7 @@ const ChatComponent: React.FC<ChatComponentProps> = ({
       .then((response) => {
         const newChatList: ChatDto[] = response.data;
 
-        if (isInNotReadMessages(userId, roomList)) {
+        if (isInNotReadMessages(roomList)) {
           SocketService.read(roomId, userId);
           return;
         }

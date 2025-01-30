@@ -1,11 +1,13 @@
-import React, { useCallback } from "react";
-import { Avatar, Badge } from "antd";
-import { TeamOutlined } from "@ant-design/icons";
-import { getRoomDateTime } from "../../../../utils/DateTimeUtil";
-import { LongStringUtil } from "../../../../utils/LongStringUtil";
 import "./RoomComponent.css";
 import "../../chat/ChatComponent.css";
+
+import { TeamOutlined } from "@ant-design/icons";
+import { Avatar, Badge } from "antd";
+import React, { useCallback } from "react";
 import { RoomDto, RoomType } from "src/interfaces/Room";
+
+import { getRoomDateTime } from "../../../../utils/DateTimeUtil";
+import { LongStringUtil } from "../../../../utils/LongStringUtil";
 
 interface RoomComponentProps {
   roomList: RoomDto[];

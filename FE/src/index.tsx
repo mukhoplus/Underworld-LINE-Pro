@@ -1,10 +1,11 @@
+import "./index.css";
+
+import AxiosProvider from "axios";
 import ReactDOM from "react-dom/client";
 import { RecoilRoot } from "recoil";
-import AxiosProvider from "axios";
-import { BaseURL } from "./services/HostingService";
 
 import App from "./App";
-import "./index.css";
+import { BaseURL } from "./services/HostingService";
 
 AxiosProvider.defaults.baseURL = `http://${BaseURL}/api/v2`; // `https://${BaseURL}/api/v2`;
 

@@ -1,6 +1,7 @@
 import { useSetRecoilState } from "recoil";
-import { userIdState } from "../stores/atoms";
+
 import { axiosRequest } from "../services/AxiosService";
+import { userIdState } from "../stores/atoms";
 
 export const useSession = () => {
   const setUserId = useSetRecoilState(userIdState);

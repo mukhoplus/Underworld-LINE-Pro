@@ -1,26 +1,31 @@
-import { useState, useEffect } from "react";
-import { Button, Row, Col, Badge } from "antd";
+import "./InfoComponent.css";
+
 import {
-  UserOutlined,
-  MessageOutlined,
   LogoutOutlined,
+  MessageOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
+import { Badge, Button, Col, Row } from "antd";
+import { useEffect, useState } from "react";
+import { ChatDto } from "src/interfaces/Chat";
+import { RoomDto } from "src/interfaces/Room";
+import { UserListDto } from "src/interfaces/User";
 import styled from "styled-components";
-import UserComponent from "./user/UserComponent";
-import RoomComponent from "./room/RoomComponent";
+
 import { axiosRequest } from "../../../services/AxiosService";
 import SocketService from "../../../services/SocketService";
-import "./InfoComponent.css";
+import RoomComponent from "./room/RoomComponent";
+import UserComponent from "./user/UserComponent";
 
 interface InfoComponentProps {
   userId: number;
   setUserId: (id: number) => void;
-  userList: any[];
-  setUserList: (list: any[]) => void;
+  userList: UserListDto[];
+  setUserList: (list: UserListDto[]) => void;
   setRoomId: (id: number) => void;
-  roomList: any[];
-  setRoomList: (list: any[]) => void;
-  setChatList: (list: any[]) => void;
+  roomList: RoomDto[];
+  setRoomList: (list: RoomDto[]) => void;
+  setChatList: (list: ChatDto[]) => void;
   allNotReadCount: number;
 }
 
