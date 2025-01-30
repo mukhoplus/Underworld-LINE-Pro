@@ -45,6 +45,9 @@
   flex-direction: column;
   overflow-y: auto;
   scroll-behavior: auto;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .info-bar {

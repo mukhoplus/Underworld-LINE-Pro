@@ -110,18 +110,25 @@ const ChatComponent: React.FC<ChatComponentProps> = ({
                 roomId={roomId}
                 setRoomId={setRoomId}
                 roomList={roomList}
-                setRoomList={setRoomList}
                 setChatList={setChatList}
                 chatListRef={chatListRef}
                 dateOutput={dateOutput}
               />
-              <div style={{ display: "flex", margin: "1px 0px" }}>
+              <div
+                style={{
+                  display: "flex",
+                  margin: "3.5px 0px",
+                }}
+              >
                 <Input.TextArea
                   id="chat-input"
                   placeholder=""
                   value={inputMessage}
                   onChange={handleInputChange}
-                  style={{ flex: "1", marginRight: "10px" }}
+                  style={{
+                    flex: "1",
+                    marginRight: "10px",
+                  }}
                   autoSize={{ minRows: 1, maxRows: 1 }}
                   onKeyPress={handleEnterKey}
                 />

@@ -1,5 +1,4 @@
 import { useCallback } from "react";
-import { axiosRequest } from "../../../services/AxiosService";
 import { Avatar } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { getChatDate, getChatTime } from "../../../utils/DateTimeUtil";
@@ -12,7 +11,6 @@ interface ChatListProps {
   roomId: number;
   setRoomId: (roomId: number) => void;
   roomList: any[];
-  setRoomList: (roomList: any[]) => void;
   setChatList: (chatList: ChatDto[]) => void;
   chatListRef: React.RefObject<HTMLDivElement | null>;
   dateOutput: { [key: string]: boolean };
@@ -24,7 +22,6 @@ const ChatList: React.FC<ChatListProps> = ({
   roomId,
   setRoomId,
   roomList,
-  setRoomList,
   setChatList,
   chatListRef,
   dateOutput,

@@ -12,7 +12,14 @@ const ChatBlank = () => {
             paddingTop: "84px",
             width: "131px",
             height: "137px",
+            WebkitUserSelect: "none",
+            MozUserSelect: "none",
+            msUserSelect: "none",
+            userSelect: "none",
+            WebkitTouchCallout: "none",
           }}
+          draggable="false"
+          onContextMenu={(e) => e.preventDefault()}
         />
       </div>
     </div>
