@@ -1,8 +1,10 @@
 package com.mukho.linepro.controller;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.mukho.linepro.dto.user.UserListDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
@@ -51,7 +53,7 @@ public class UserController {
     }
 
     @GetMapping("/session")
-    public ResponseEntity<?> session(HttpServletRequest request) {
+    public ResponseEntity<Integer> session(HttpServletRequest request) {
         HttpSession session = request.getSession();
 
         try {
@@ -122,7 +124,7 @@ public class UserController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<?> getList() {
+    public ResponseEntity<List<UserListDto>> getList() {
         try {
             return ResponseEntity.ok(userService.getUserList());
         } catch (Exception e) {
@@ -131,7 +133,7 @@ public class UserController {
     }
 
     @GetMapping("/id/{id}")
-    public ResponseEntity<?> duplicateCheckId(@PathVariable String id) {
+    public ResponseEntity<Boolean> duplicateCheckId(@PathVariable String id) {
         try {
             return ResponseEntity.ok(userService.duplicateCheckId(id));
         } catch (Exception e) {
@@ -140,7 +142,7 @@ public class UserController {
     }
 
     @GetMapping("/name/{name}")
-    public ResponseEntity<?> duplicateCheckName(@PathVariable String name) {
+    public ResponseEntity<Boolean> duplicateCheckName(@PathVariable String name) {
         try {
             return ResponseEntity.ok(userService.duplicateCheckName(name));
         } catch (Exception e) {
