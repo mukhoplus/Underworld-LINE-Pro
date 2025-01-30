@@ -51,7 +51,7 @@ const SocketService = {
       if (roomId === 0) return;
       if (roomId !== responseRoomId) return;
 
-      if (isInNotReadMessages(userId, chatList)) {
+      if (isInNotReadMessages(userId, roomList)) {
         SocketService.read(roomId, userId);
         return;
       }

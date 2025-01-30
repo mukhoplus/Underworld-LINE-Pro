@@ -53,7 +53,7 @@ const ChatComponent: React.FC<ChatComponentProps> = ({
       .then((response) => {
         const newChatList: ChatDto[] = response.data;
 
-        if (isInNotReadMessages(userId, newChatList)) {
+        if (isInNotReadMessages(userId, roomList)) {
           SocketService.read(roomId, userId);
           return;
         }
