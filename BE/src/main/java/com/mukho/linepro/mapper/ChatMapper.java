@@ -10,7 +10,7 @@ import com.mukho.linepro.dto.chat.SendChatDto;
 
 @Mapper
 public interface ChatMapper {
-    List<ChatDto> getChatList(int roomId);
+    List<ChatDto> getChatListByRoomId(int roomId);
     int sendChat(Chat chat);
     void readChat(SendChatDto sendChatDto);
 }
