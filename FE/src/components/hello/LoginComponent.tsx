@@ -51,7 +51,7 @@ const LoginComponent: React.FC<{ setPage: (page: number) => void }> = ({
 
   return (
     <LoginForm>
-      <h1 style={{ textAlign: "center", color: "#06c755" }}>Underworld LINE</h1>
+      <h1 className="title">Underworld LINE</h1>
       <Form.Item name="id">
         <Input
           prefix={<IdcardOutlined />}

@@ -63,7 +63,7 @@ const SignupComponent: React.FC<SignupComponentProps> = ({ setPage }) => {
 
   return (
     <SignupForm>
-      <h1 style={{ textAlign: "center", color: "#06c755" }}>회원가입</h1>
+      <h1 className="title">회원가입</h1>
       <Form.Item
         name="id"
         rules={[
