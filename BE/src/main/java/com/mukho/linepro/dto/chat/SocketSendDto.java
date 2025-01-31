@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class SocketSendDto {
-    String type;
-    SendChatDto data;
+	String type;
+	SendChatDto data;
 }

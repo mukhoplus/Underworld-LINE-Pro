@@ -4,71 +4,50 @@
 <mapper namespace="com.mukho.linepro.mapper.UserMapper">
 
     <insert id="signup">
-        INSERT INTO
-            user (id, password, name)
-        VALUES (
-                   #{id},
-                   #{password},
-                   #{name}
-               )
+        INSERT INTO user (id, password, name)
+        VALUES (#{id},
+                #{password},
+                #{name})
     </insert>
 
     <select id="login" resultType="com.mukho.linepro.domain.User">
-        SELECT
-            user_id userId,
-            id,
-            password,
-            name
-        FROM
-            user
-        WHERE
-            id = #{id}
+        SELECT user_id userId,
+               id,
+               password,
+               name
+        FROM user
+        WHERE id = #{id}
     </select>
 
     <select id="getUserId" resultType="java.lang.Integer">
-        SELECT
-            user_id userId
-        FROM
-            user
-        WHERE
-            id = #{id}
+        SELECT user_id userId
+        FROM user
+        WHERE id = #{id}
     </select>
 
     <select id="getUserList" resultType="com.mukho.linepro.dto.user.UserListDto">
-        SELECT
-            user_id userId,
-            name
-        FROM
-            user
-        ORDER BY
-            name
+        SELECT user_id userId,
+               name
+        FROM user
+        ORDER BY name
     </select>
 
     <select id="duplicateCheckId" resultType="java.lang.Integer">
-        SELECT
-            COUNT(id)
-        FROM
-            user
-        WHERE
-            id = #{id}
+        SELECT COUNT(id)
+        FROM user
+        WHERE id = #{id}
     </select>
 
     <select id="duplicateCheckName" resultType="java.lang.Integer">
-        SELECT
-            COUNT(name)
-        FROM
-            user
-        WHERE
-            name = #{name}
+        SELECT COUNT(name)
+        FROM user
+        WHERE name = #{name}
     </select>
 
     <select id="getName" resultType="java.lang.String">
-        SELECT
-            name
-        FROM
-            user
-        WHERE
-            user_id = #{id}
+        SELECT name
+        FROM user
+        WHERE user_id = #{id}
     </select>
 
 </mapper>

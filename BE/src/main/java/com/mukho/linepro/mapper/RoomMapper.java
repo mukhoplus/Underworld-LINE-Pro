@@ -9,10 +9,15 @@ import com.mukho.linepro.dto.room.RoomDto;
 
 @Mapper
 public interface RoomMapper {
-    int createRoom(Room room);
-    Room getRoomById(int roomId);
-    List<RoomDto> getRoomListByUserId(int userId);
-    Integer findOneToOneRoom(int userId1, int userId2);
-    Integer findMeRoom(int userId);
-    void updateRoom(int roomId, String lastMessage);
+	int createRoom(Room room);
+
+	Room getRoomById(int roomId);
+
+	List<RoomDto> getRoomListByUserId(int userId);
+
+	Integer findOneToOneRoom(int userId1, int userId2);
+
+	Integer findMeRoom(int userId);
+
+	void updateRoom(int roomId, String lastMessage);
 }

@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class RoomParticipants {
-    private Integer roomId;
-    private Integer userId;
-    private Integer lastReadChatId;
+	private Integer roomId;
+	private Integer userId;
+	private Integer lastReadChatId;
 }
