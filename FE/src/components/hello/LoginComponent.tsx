@@ -82,7 +82,7 @@ const LoginComponent: React.FC<{ setPage: (page: number) => void }> = ({
         <Button
           type="primary"
           className="hello-btn"
-          style={{ backgroundColor: "#06c755", marginRight: "60px" }}
+          style={{ backgroundColor: "#06c755", marginRight: "10px" }}
           onClick={handleLogin}
         >
           로그인
@@ -100,8 +100,8 @@ const LoginComponent: React.FC<{ setPage: (page: number) => void }> = ({
 };
 
 const LoginForm = styled(Form)`
-  padding-top: 35%;
-  width: 80%;
+  width: 100%;
+  min-width: 300px;
   margin: 0 auto;
   flex-direction: column;
   align-items: center;

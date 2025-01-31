@@ -1,4 +1,4 @@
-import { Col, Row } from "antd";
+import { Col } from "antd";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { RoomDto } from "src/interfaces/Room";
@@ -15,6 +15,7 @@ import {
   userIdState,
   userListState,
 } from "../../stores/atoms";
+import { breakpoints } from "../../styles/CommonStyles";
 
 const Main: React.FC = () => {
   const userId = useRecoilValue(userIdState);
@@ -104,26 +105,49 @@ const Main: React.FC = () => {
       roomList,
       setRoomList,
       setChatList,
+      userList,
     }),
-    [userId, roomId, setRoomId, chatList, roomList, setRoomList, setChatList]
+    [
+      userId,
+      roomId,
+      setRoomId,
+      chatList,
+      roomList,
+      setRoomList,
+      setChatList,
+      userList,
+    ]
   );
 
   return (
-    <Row>
-      <ColWrapper>
+    <MainWrapper>
+      {roomId === 0 ? (
         <InfoComponent {...infoProps} />
-      </ColWrapper>
-      <ColWrapper>
+      ) : (
         <ChatComponent {...chatProps} />
-      </ColWrapper>
-    </Row>
+      )}
+    </MainWrapper>
   );
 };
 
-const ColWrapper = styled(Col)`
+const MainWrapper = styled(Col)`
+  width: 100%;
+  height: 100vh;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
   border: 1px solid gray;
-  width: 452px;
-  height: 602px;
+
+  @media screen and (min-width: ${breakpoints.mobile}) {
+    min-width: 450px;
+    max-width: 450px;
+    border-left: 1px solid gray;
+    border-right: 1px solid gray;
+  }
+
+  @media screen and (max-width: ${breakpoints.mobile}) {
+    border: none;
+  }
 `;
 
 export default Main;

@@ -1,11 +1,5 @@
 import "./InfoComponent.css";
 
-import {
-  LogoutOutlined,
-  MessageOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
-import { Badge, Button, Col, Row } from "antd";
 import { useEffect, useState } from "react";
 import { ChatDto } from "src/interfaces/Chat";
 import { RoomDto } from "src/interfaces/Room";
@@ -13,10 +7,9 @@ import { UserListDto } from "src/interfaces/User";
 import styled from "styled-components";
 
 import { axiosRequest } from "../../../services/AxiosService";
-import SocketService from "../../../services/SocketService";
+import NavigationBar from "./navigation/NavigationBar";
 import RoomComponent from "./room/RoomComponent";
 import UserComponent from "./user/UserComponent";
-
 interface InfoComponentProps {
   userId: number;
   setUserId: (id: number) => void;
@@ -53,6 +46,14 @@ const InfoComponent: React.FC<InfoComponentProps> = ({
       });
   };
 
+  const resetStates = () => {
+    setUserId(0);
+    setUserList([]);
+    setRoomId(0);
+    setRoomList([]);
+    setChatList([]);
+  };
+
   const handleRoomList = async () => {
     axiosRequest("get", `/room/list/${userId}`)
       .then((response) => {
@@ -63,94 +64,64 @@ const InfoComponent: React.FC<InfoComponentProps> = ({
       });
   };
 
-  const resetStates = () => {
-    setUserId(0);
-    setUserList([]);
-    setRoomId(0);
-    setRoomList([]);
-    setChatList([]);
-  };
-
   useEffect(() => {
     handleUserList();
     handleRoomList();
   }, [userId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <>
-      <InfoWrapper>
-        <Col style={{ borderRight: "1px solid gainsboro" }}>
-          <Row>
-            <Button className="btn-icon" onClick={() => setMenu(0)}>
-              <UserOutlined
-                className="icon"
-                style={{ color: menu === 0 ? "#06c755" : "" }}
-              />
-            </Button>
-          </Row>
-          <Row>
-            <Button className="btn-icon" onClick={() => setMenu(1)}>
-              <Badge
-                style={{ fontSize: "10px" }}
-                count={allNotReadCount}
-                overflowCount={999}
-              >
-                <MessageOutlined
-                  className="icon"
-                  style={{ color: menu === 1 ? "#06c755" : "" }}
-                />
-              </Badge>
-            </Button>
-          </Row>
-          <Row>
-            <div className="btn-icon-temp" />
-          </Row>
-          <Row>
-            <Button
-              className="btn-icon"
-              onClick={() => {
-                axiosRequest("post", "/user/logout")
-                  .then(() => {
-                    SocketService.close();
-                  })
-                  .catch()
-                  .finally(() => {
-                    resetStates();
-                  });
-              }}
-            >
-              <LogoutOutlined className="icon" />
-            </Button>
-          </Row>
-        </Col>
-        <ContentCol>
-          {menu === 0 ? (
-            <UserComponent
-              userId={userId}
-              userList={userList}
-              setRoomId={setRoomId}
-              roomList={roomList}
-              setRoomList={setRoomList}
-            />
-          ) : (
-            <RoomComponent setRoomId={setRoomId} roomList={roomList} />
-          )}
-        </ContentCol>
-      </InfoWrapper>
-    </>
+    <InfoWrapper>
+      <Header>
+        <h2>{menu === 0 ? "친구" : "채팅"}</h2>
+      </Header>
+      <ContentArea>
+        {menu === 0 ? (
+          <UserComponent
+            userId={userId}
+            userList={userList}
+            setRoomId={setRoomId}
+            roomList={roomList}
+            setRoomList={setRoomList}
+          />
+        ) : (
+          <RoomComponent setRoomId={setRoomId} roomList={roomList} />
+        )}
+      </ContentArea>
+      <NavigationBar
+        menu={menu}
+        setMenu={setMenu}
+        resetStates={resetStates}
+        allNotReadCount={allNotReadCount}
+      />
+    </InfoWrapper>
   );
 };
 
 const InfoWrapper = styled.div`
   display: flex;
+  flex-direction: column;
   height: 100%;
-  overflow: hidden;
+  width: 100%;
+  max-width: 450px;
+  margin: 0 auto;
 `;
 
-const ContentCol = styled(Col)`
-  max-width: calc(100% - 50px);
-  height: 100%;
-  overflow: auto;
+const Header = styled.div`
+  height: 60px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid gainsboro;
+
+  h2 {
+    margin: 0;
+    font-size: 20px;
+  }
+`;
+
+const ContentArea = styled.div`
+  flex: 1;
+  overflow-y: auto;
 `;
 
 export default InfoComponent;

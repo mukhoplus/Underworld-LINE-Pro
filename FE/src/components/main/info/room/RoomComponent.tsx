@@ -41,10 +41,13 @@ const RoomComponent: React.FC<RoomComponentProps> = React.memo(
                 alignItems: "center",
               }}
             >
-              <Avatar style={{ margin: "0px 10px 0px 10px" }} />
+              <Avatar size={50} style={{ margin: "0px 10px 0px 0px" }} />
             </div>
             <div className="info">
-              <div className="line">
+              <div
+                className="line"
+                style={{ display: "flex", alignItems: "center" }}
+              >
                 <div
                   className="name"
                   style={{ display: "flex", alignItems: "center" }}
