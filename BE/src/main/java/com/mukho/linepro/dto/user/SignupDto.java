@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class SignupDto {
-    String id;
-    String password;
-    String name;
+	String id;
+	String password;
+	String name;
 }

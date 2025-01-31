@@ -7,6 +7,6 @@ import lombok.Data;
 @Data
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class UserListDto {
-    int userId;
-    String name;
+	int userId;
+	String name;
 }

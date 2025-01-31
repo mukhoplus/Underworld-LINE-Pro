@@ -3,46 +3,42 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mukho.linepro.mapper.RoomMapper">
 
-    <insert id="createRoom" parameterType="com.mukho.linepro.domain.Room" 
-        useGeneratedKeys="true" keyProperty="roomId" keyColumn="room_id">
+    <insert id="createRoom" parameterType="com.mukho.linepro.domain.Room"
+            useGeneratedKeys="true" keyProperty="roomId" keyColumn="room_id">
         INSERT INTO room (room_type, name, last_message)
-            VALUES (#{roomType}, #{name}, #{lastMessage})
+        VALUES (#{roomType}, #{name}, #{lastMessage})
         <selectKey resultType="int" keyProperty="roomId" order="AFTER">
             SELECT LAST_INSERT_ID()
         </selectKey>
     </insert>
 
     <update id="updateRoom">
-        UPDATE room 
+        UPDATE room
         SET last_message = #{lastMessage},
-            updated_at = CURRENT_TIMESTAMP
+            updated_at   = CURRENT_TIMESTAMP
         WHERE room_id = #{roomId}
     </update>
 
     <select id="getRoomListByUserId" resultType="com.mukho.linepro.dto.room.RoomDto">
-        SELECT
-            r.room_id as roomId,
-            r.room_type as roomType,
-            r.name as roomName,
-            r.last_message as lastMessage,
-            r.updated_at as updatedAt,
-            rp.last_read_chat_id as lastReadChatId,
-            (SELECT
-                 CASE
-                     WHEN EXISTS (
-                         SELECT 1 FROM chat c
-                         WHERE c.room_id = r.room_id
-                           AND c.chat_id > COALESCE(rp.last_read_chat_id, 0)
-                           AND c.send_user_id != #{userId}
-                     ) THEN
-                         (SELECT COUNT(*)
-                          FROM chat c
-                          WHERE c.room_id = r.room_id
-                            AND c.chat_id > COALESCE(rp.last_read_chat_id, 0)
-                            AND c.send_user_id != #{userId})
-                     ELSE 0
-                 END
-            ) as notReadCount
+        SELECT r.room_id            as roomId,
+               r.room_type          as roomType,
+               r.name               as roomName,
+               r.last_message       as lastMessage,
+               r.updated_at         as updatedAt,
+               rp.last_read_chat_id as lastReadChatId,
+               (SELECT CASE
+                           WHEN EXISTS (SELECT 1
+                                        FROM chat c
+                                        WHERE c.room_id = r.room_id
+                                          AND c.chat_id > COALESCE(rp.last_read_chat_id, 0)
+                                          AND c.send_user_id != #{userId}) THEN
+                               (SELECT COUNT(*)
+                                FROM chat c
+                                WHERE c.room_id = r.room_id
+                                  AND c.chat_id > COALESCE(rp.last_read_chat_id, 0)
+                                  AND c.send_user_id != #{userId})
+                           ELSE 0
+                           END)     as notReadCount
         FROM room r
                  JOIN room_participants rp ON r.room_id = rp.room_id
         WHERE rp.user_id = #{userId}
@@ -50,24 +46,23 @@
     </select>
 
     <select id="getRoomById" resultType="com.mukho.linepro.domain.Room">
-        SELECT 
-            room_id as roomId,
-            room_type as roomType,
-            name,
-            last_message as lastMessage,
-            updated_at as updatedAt
-        FROM room 
+        SELECT room_id      as roomId,
+               room_type    as roomType,
+               name,
+               last_message as lastMessage,
+               updated_at   as updatedAt
+        FROM room
         WHERE room_id = #{roomId}
     </select>
 
     <select id="findOneToOneRoom" resultType="Integer">
         SELECT r.room_id
         FROM room r
-        JOIN room_participants rp1 ON r.room_id = rp1.room_id
-        JOIN room_participants rp2 ON r.room_id = rp2.room_id
+                 JOIN room_participants rp1 ON r.room_id = rp1.room_id
+                 JOIN room_participants rp2 ON r.room_id = rp2.room_id
         WHERE r.room_type = 'ONE_TO_ONE'
-        AND rp1.user_id = #{userId1}
-        AND rp2.user_id = #{userId2}
+          AND rp1.user_id = #{userId1}
+          AND rp2.user_id = #{userId2}
         LIMIT 1
     </select>
 
@@ -77,11 +72,9 @@
                  JOIN room_participants rp ON r.room_id = rp.room_id
         WHERE r.room_type = 'ME'
           AND rp.user_id = #{userId}
-          AND (
-                  SELECT COUNT(*)
-                  FROM room_participants
-                  WHERE room_id = r.room_id
-              ) = 1
+          AND (SELECT COUNT(*)
+               FROM room_participants
+               WHERE room_id = r.room_id) = 1
         LIMIT 1
     </select>
 

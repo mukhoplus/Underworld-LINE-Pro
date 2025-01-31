@@ -11,6 +11,6 @@ import lombok.Data;
 @AllArgsConstructor
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class ChatResponseDto {
-    int roomId;
-    List<ChatDto> chatList;
+	int roomId;
+	List<ChatDto> chatList;
 }

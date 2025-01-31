@@ -9,7 +9,7 @@ import lombok.Data;
 @AllArgsConstructor
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class LoginUserDto {
-    int userId;
-    String id;
-    String name;
+	int userId;
+	String id;
+	String name;
 }

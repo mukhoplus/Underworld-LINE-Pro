@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class SendChatDto {
-    int roomId;
-    int sendUserId;
-    String message;
+	int roomId;
+	int sendUserId;
+	String message;
 }
