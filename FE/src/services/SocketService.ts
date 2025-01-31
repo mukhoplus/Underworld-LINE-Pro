@@ -1,5 +1,6 @@
 import { ChatDto } from "src/interfaces/Chat";
 import { RoomDto } from "src/interfaces/Room";
+import { SOCKET_URL } from "src/services/HostingService";
 
 import { isInNotReadMessages } from "../utils/MessageUtil";
 
@@ -33,11 +34,10 @@ const SocketService = {
   },
 
   connect: (
-    url: string,
     setRoomList: (roomList: RoomDto[]) => void,
     setChatList: (chatList: ChatDto[]) => void
   ) => {
-    SocketService.socket = new WebSocket(url);
+    SocketService.socket = new WebSocket(SOCKET_URL);
 
     SocketService.socket.onopen = () => {};
 
