@@ -1,0 +1,19 @@
+.title {
+  text-align: center;
+  color: #06c755;
+
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.form-btn {
+  display: flex;
+  justify-content: space-around;
+}
+
+.hello-btn {
+  width: 150px;
+}
