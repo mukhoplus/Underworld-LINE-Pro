@@ -5,6 +5,7 @@
 
   /* 스크롤바 hover 상태 스타일 */
   &:hover {
+    scrollbar-width: thin;
     scrollbar-color: gray rgba(23, 107, 135, 0.1);
     transition: scrollbar-color 0.5s; /* hover 상태가 천천히 변화하도록 설정 */
   }
@@ -12,6 +13,7 @@
   /* WebKit 스크롤바 스타일 (Chrome, Safari 등) */
   &::-webkit-scrollbar {
     width: 6px; /* 스크롤바 너비 */
+    scrollbar-width: thin;
   }
 
   &::-webkit-scrollbar-thumb {
@@ -33,11 +35,12 @@
   display: flex;
   flex-direction: column;
   font-size: 13px;
+  width: 100%;
 }
 
 .chat-list {
-  max-width: 420px;
-  width: 420px;
+  max-width: 450px;
+  width: 95%;
   margin: 0 auto;
   padding: 10px 10px 8px 10px;
   display: flex;

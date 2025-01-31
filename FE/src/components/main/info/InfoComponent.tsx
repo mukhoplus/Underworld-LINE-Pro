@@ -1,11 +1,5 @@
 import "./InfoComponent.css";
 
-import {
-  LogoutOutlined,
-  MessageOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
-import { Badge } from "antd";
 import { useEffect, useState } from "react";
 import { ChatDto } from "src/interfaces/Chat";
 import { RoomDto } from "src/interfaces/Room";
@@ -13,10 +7,9 @@ import { UserListDto } from "src/interfaces/User";
 import styled from "styled-components";
 
 import { axiosRequest } from "../../../services/AxiosService";
-import SocketService from "../../../services/SocketService";
+import NavigationBar from "./navigation/NavigationBar";
 import RoomComponent from "./room/RoomComponent";
 import UserComponent from "./user/UserComponent";
-
 interface InfoComponentProps {
   userId: number;
   setUserId: (id: number) => void;
@@ -53,6 +46,14 @@ const InfoComponent: React.FC<InfoComponentProps> = ({
       });
   };
 
+  const resetStates = () => {
+    setUserId(0);
+    setUserList([]);
+    setRoomId(0);
+    setRoomList([]);
+    setChatList([]);
+  };
+
   const handleRoomList = async () => {
     axiosRequest("get", `/room/list/${userId}`)
       .then((response) => {
@@ -61,14 +62,6 @@ const InfoComponent: React.FC<InfoComponentProps> = ({
       .catch(() => {
         resetStates();
       });
-  };
-
-  const resetStates = () => {
-    setUserId(0);
-    setUserList([]);
-    setRoomId(0);
-    setRoomList([]);
-    setChatList([]);
   };
 
   useEffect(() => {
@@ -94,54 +87,12 @@ const InfoComponent: React.FC<InfoComponentProps> = ({
           <RoomComponent setRoomId={setRoomId} roomList={roomList} />
         )}
       </ContentArea>
-      <BottomNav>
-        <NavItem className="btn-icon" onClick={() => setMenu(0)}>
-          <UserOutlined
-            className="icon"
-            style={{ color: menu === 0 ? "#06c755" : "" }}
-          />
-          <span
-            className="nav-text"
-            style={{ color: menu === 0 ? "#06c755" : "" }}
-          >
-            친구
-          </span>
-        </NavItem>
-        <NavItem className="btn-icon" onClick={() => setMenu(1)}>
-          <Badge
-            style={{ fontSize: "10px" }}
-            count={allNotReadCount}
-            overflowCount={999}
-          >
-            <MessageOutlined
-              className="icon"
-              style={{ color: menu === 1 ? "#06c755" : "" }}
-            />
-          </Badge>
-          <span
-            className="nav-text"
-            style={{ color: menu === 1 ? "#06c755" : "" }}
-          >
-            채팅
-          </span>
-        </NavItem>
-        <NavItem
-          className="btn-icon"
-          onClick={() => {
-            axiosRequest("post", "/user/logout")
-              .then(() => {
-                SocketService.close();
-              })
-              .catch()
-              .finally(() => {
-                resetStates();
-              });
-          }}
-        >
-          <LogoutOutlined className="icon" />
-          <span className="nav-text">로그아웃</span>
-        </NavItem>
-      </BottomNav>
+      <NavigationBar
+        menu={menu}
+        setMenu={setMenu}
+        resetStates={resetStates}
+        allNotReadCount={allNotReadCount}
+      />
     </InfoWrapper>
   );
 };
@@ -150,6 +101,9 @@ const InfoWrapper = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
+  width: 100%;
+  max-width: 450px;
+  margin: 0 auto;
 `;
 
 const Header = styled.div`
@@ -168,34 +122,6 @@ const Header = styled.div`
 const ContentArea = styled.div`
   flex: 1;
   overflow-y: auto;
-`;
-
-const BottomNav = styled.div`
-  height: 60px;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  border-top: 1px solid gainsboro;
-  background: white;
-`;
-
-const NavItem = styled.div<{ active?: boolean }>`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  cursor: pointer;
-  flex: 1;
-
-  .nav-icon {
-    font-size: 24px;
-    color: ${(props) => (props.active ? "#06c755" : "inherit")};
-    margin-bottom: 4px;
-  }
-
-  .nav-text {
-    font-size: 12px;
-    color: ${(props) => (props.active ? "#06c755" : "#666")};
-  }
 `;
 
 export default InfoComponent;

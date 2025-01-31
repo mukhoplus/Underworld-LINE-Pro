@@ -15,6 +15,7 @@ import {
   userIdState,
   userListState,
 } from "../../stores/atoms";
+import { breakpoints } from "../../styles/CommonStyles";
 
 const Main: React.FC = () => {
   const userId = useRecoilValue(userIdState);
@@ -132,11 +133,21 @@ const Main: React.FC = () => {
 const MainWrapper = styled(Col)`
   width: 100%;
   height: 100vh;
-  max-width: 452px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   border: 1px solid gray;
+
+  @media screen and (min-width: ${breakpoints.mobile}) {
+    min-width: 450px;
+    max-width: 450px;
+    border-left: 1px solid gray;
+    border-right: 1px solid gray;
+  }
+
+  @media screen and (max-width: ${breakpoints.mobile}) {
+    border: none;
+  }
 `;
 
 export default Main;
