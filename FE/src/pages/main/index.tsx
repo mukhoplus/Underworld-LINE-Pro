@@ -7,7 +7,6 @@ import styled from "styled-components";
 import ChatComponent from "../../components/main/chat/ChatComponent";
 import InfoComponent from "../../components/main/info/InfoComponent";
 import { axiosRequest } from "../../services/AxiosService";
-import { BaseURL } from "../../services/HostingService";
 import SocketService from "../../services/SocketService";
 import {
   chatListState,
@@ -56,11 +55,7 @@ const Main: React.FC = () => {
 
   useEffect(() => {
     if (userId !== 0) {
-      SocketService.connect(
-        `ws://${BaseURL}/api/v2/socket`,
-        setRoomList,
-        setChatList
-      );
+      SocketService.connect(setRoomList, setChatList);
     }
     return () => {
       SocketService.close();
