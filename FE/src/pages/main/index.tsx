@@ -104,8 +104,18 @@ const Main: React.FC = () => {
       roomList,
       setRoomList,
       setChatList,
+      userList,
     }),
-    [userId, roomId, setRoomId, chatList, roomList, setRoomList, setChatList]
+    [
+      userId,
+      roomId,
+      setRoomId,
+      chatList,
+      roomList,
+      setRoomList,
+      setChatList,
+      userList,
+    ]
   );
 
   return (

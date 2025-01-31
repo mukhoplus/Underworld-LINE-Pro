@@ -3,6 +3,7 @@ import { Avatar } from "antd";
 import { useCallback } from "react";
 
 import { ChatDto } from "../../../../interfaces/Chat";
+import { UserListDto } from "../../../../interfaces/User";
 import { getChatDate, getChatTime } from "../../../../utils/DateTimeUtil";
 import { LongStringUtil } from "../../../../utils/LongStringUtil";
 
@@ -15,6 +16,7 @@ interface ChatListProps {
   setChatList: (chatList: ChatDto[]) => void;
   chatListRef: React.RefObject<HTMLDivElement | null>;
   dateOutput: { [key: string]: boolean };
+  userList: UserListDto[];
 }
 
 const ChatList: React.FC<ChatListProps> = ({
@@ -26,6 +28,7 @@ const ChatList: React.FC<ChatListProps> = ({
   setChatList,
   chatListRef,
   dateOutput,
+  userList,
 }) => {
   const getRoomNameByRoomId = useCallback((roomList: any, roomId: number) => {
     const getRoomNameInRoomList = (roomList: any, roomId: number) => {
@@ -47,6 +50,14 @@ const ChatList: React.FC<ChatListProps> = ({
     dateOutput[chatDate] = true;
     return chatDate;
   };
+
+  const getUserName = useCallback(
+    (sendUserId: number) => {
+      const user = userList.find((user) => user.userId === sendUserId);
+      return user?.name || "";
+    },
+    [userList]
+  );
 
   const handleBack = () => {
     setRoomId(0);
@@ -82,13 +93,20 @@ const ChatList: React.FC<ChatListProps> = ({
                 alignSelf:
                   chat.sendUserId === userId ? "flex-end" : "flex-start",
                 maxWidth: "80%",
-                display: "inline-flex",
+                display: "flex",
+                flexDirection: "row",
                 alignItems: "flex-end",
               }}
             >
               {chat.sendUserId !== userId && (
-                <div style={{ paddingBottom: "5px" }}>
-                  <Avatar />
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "flex-end",
+                    marginBottom: "5px",
+                  }}
+                >
+                  <Avatar size={55} style={{ marginRight: "3px" }} />
                 </div>
               )}
               {chat.sendUserId === userId && (
@@ -106,23 +124,43 @@ const ChatList: React.FC<ChatListProps> = ({
                 </p>
               )}
               <div
-                id={`message-${index}`}
-                key={`message-${index}`}
+                className="chat-content"
                 style={{
-                  alignSelf:
-                    chat.sendUserId === userId ? "flex-end" : "flex-start",
-                  margin: "5px",
-                  padding: "10px",
-                  maxWidth: chat.sendUserId === userId ? "71%" : "65%",
-                  background:
-                    chat.sendUserId === userId ? "#06c755" : "#e0e0e0",
-                  color: chat.sendUserId === userId ? "white" : "black",
-                  borderRadius: "8px",
-                  whiteSpace: "pre-wrap",
-                  overflowWrap: "break-word",
+                  marginTop: chat.sendUserId === userId ? "0px" : "3px",
+                  flex: "1",
+                  maxWidth: chat.sendUserId === userId ? "80%" : "65%",
                 }}
               >
-                {chat.message}
+                {chat.sendUserId !== userId && (
+                  <span
+                    style={{
+                      fontSize: "13px",
+                      color: "#666",
+                      paddingLeft: "5px",
+                    }}
+                  >
+                    {getUserName(chat.sendUserId)}
+                  </span>
+                )}
+                <div
+                  id={`message-${index}`}
+                  key={`message-${index}`}
+                  style={{
+                    alignSelf:
+                      chat.sendUserId === userId ? "flex-end" : "flex-start",
+                    margin: "5px",
+                    padding: "10px",
+                    background:
+                      chat.sendUserId === userId ? "#06c755" : "#e0e0e0",
+                    color: chat.sendUserId === userId ? "white" : "black",
+                    borderRadius: "8px",
+                    whiteSpace: "pre-wrap",
+                    overflowWrap: "break-word",
+                    wordBreak: "break-word",
+                  }}
+                >
+                  {chat.message}
+                </div>
               </div>
               {chat.sendUserId !== userId && (
                 <p

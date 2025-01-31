@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { RoomDto } from "src/interfaces/Room";
 
 import { ChatDto } from "../../../interfaces/Chat";
+import { UserListDto } from "../../../interfaces/User";
 import { axiosRequest } from "../../../services/AxiosService";
 import SocketService from "../../../services/SocketService";
 import { isInNotReadMessages } from "../../../utils/MessageUtil";
@@ -18,6 +19,7 @@ interface ChatComponentProps {
   chatList: ChatDto[];
   roomList: RoomDto[];
   setChatList: (list: ChatDto[]) => void;
+  userList: UserListDto[];
 }
 
 const ChatComponent: React.FC<ChatComponentProps> = ({
@@ -27,6 +29,7 @@ const ChatComponent: React.FC<ChatComponentProps> = ({
   chatList,
   roomList,
   setChatList,
+  userList,
 }) => {
   const [inputMessage, setInputMessage] = useState<string>("");
   const chatListRef = useRef<HTMLDivElement | null>(null);
@@ -114,6 +117,7 @@ const ChatComponent: React.FC<ChatComponentProps> = ({
             setChatList={setChatList}
             chatListRef={chatListRef}
             dateOutput={dateOutput}
+            userList={userList}
           />
           <div
             style={{
