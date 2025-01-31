@@ -5,7 +5,7 @@ import {
   MessageOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Badge, Button, Col, Row } from "antd";
+import { Badge } from "antd";
 import { useEffect, useState } from "react";
 import { ChatDto } from "src/interfaces/Chat";
 import { RoomDto } from "src/interfaces/Room";
@@ -77,80 +77,125 @@ const InfoComponent: React.FC<InfoComponentProps> = ({
   }, [userId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <>
-      <InfoWrapper>
-        <Col style={{ borderRight: "1px solid gainsboro" }}>
-          <Row>
-            <Button className="btn-icon" onClick={() => setMenu(0)}>
-              <UserOutlined
-                className="icon"
-                style={{ color: menu === 0 ? "#06c755" : "" }}
-              />
-            </Button>
-          </Row>
-          <Row>
-            <Button className="btn-icon" onClick={() => setMenu(1)}>
-              <Badge
-                style={{ fontSize: "10px" }}
-                count={allNotReadCount}
-                overflowCount={999}
-              >
-                <MessageOutlined
-                  className="icon"
-                  style={{ color: menu === 1 ? "#06c755" : "" }}
-                />
-              </Badge>
-            </Button>
-          </Row>
-          <Row>
-            <div className="btn-icon-temp" />
-          </Row>
-          <Row>
-            <Button
-              className="btn-icon"
-              onClick={() => {
-                axiosRequest("post", "/user/logout")
-                  .then(() => {
-                    SocketService.close();
-                  })
-                  .catch()
-                  .finally(() => {
-                    resetStates();
-                  });
-              }}
-            >
-              <LogoutOutlined className="icon" />
-            </Button>
-          </Row>
-        </Col>
-        <ContentCol>
-          {menu === 0 ? (
-            <UserComponent
-              userId={userId}
-              userList={userList}
-              setRoomId={setRoomId}
-              roomList={roomList}
-              setRoomList={setRoomList}
+    <InfoWrapper>
+      <Header>
+        <h2>{menu === 0 ? "친구" : "채팅"}</h2>
+      </Header>
+      <ContentArea>
+        {menu === 0 ? (
+          <UserComponent
+            userId={userId}
+            userList={userList}
+            setRoomId={setRoomId}
+            roomList={roomList}
+            setRoomList={setRoomList}
+          />
+        ) : (
+          <RoomComponent setRoomId={setRoomId} roomList={roomList} />
+        )}
+      </ContentArea>
+      <BottomNav>
+        <NavItem className="btn-icon" onClick={() => setMenu(0)}>
+          <UserOutlined
+            className="icon"
+            style={{ color: menu === 0 ? "#06c755" : "" }}
+          />
+          <span
+            className="nav-text"
+            style={{ color: menu === 0 ? "#06c755" : "" }}
+          >
+            친구
+          </span>
+        </NavItem>
+        <NavItem className="btn-icon" onClick={() => setMenu(1)}>
+          <Badge
+            style={{ fontSize: "10px" }}
+            count={allNotReadCount}
+            overflowCount={999}
+          >
+            <MessageOutlined
+              className="icon"
+              style={{ color: menu === 1 ? "#06c755" : "" }}
             />
-          ) : (
-            <RoomComponent setRoomId={setRoomId} roomList={roomList} />
-          )}
-        </ContentCol>
-      </InfoWrapper>
-    </>
+          </Badge>
+          <span
+            className="nav-text"
+            style={{ color: menu === 1 ? "#06c755" : "" }}
+          >
+            채팅
+          </span>
+        </NavItem>
+        <NavItem
+          className="btn-icon"
+          onClick={() => {
+            axiosRequest("post", "/user/logout")
+              .then(() => {
+                SocketService.close();
+              })
+              .catch()
+              .finally(() => {
+                resetStates();
+              });
+          }}
+        >
+          <LogoutOutlined className="icon" />
+          <span className="nav-text">로그아웃</span>
+        </NavItem>
+      </BottomNav>
+    </InfoWrapper>
   );
 };
 
 const InfoWrapper = styled.div`
   display: flex;
+  flex-direction: column;
   height: 100%;
-  overflow: hidden;
 `;
 
-const ContentCol = styled(Col)`
-  max-width: calc(100% - 50px);
-  height: 100%;
-  overflow: auto;
+const Header = styled.div`
+  height: 60px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid gainsboro;
+
+  h2 {
+    margin: 0;
+    font-size: 20px;
+  }
+`;
+
+const ContentArea = styled.div`
+  flex: 1;
+  overflow-y: auto;
+`;
+
+const BottomNav = styled.div`
+  height: 60px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border-top: 1px solid gainsboro;
+  background: white;
+`;
+
+const NavItem = styled.div<{ active?: boolean }>`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  flex: 1;
+
+  .nav-icon {
+    font-size: 24px;
+    color: ${(props) => (props.active ? "#06c755" : "inherit")};
+    margin-bottom: 4px;
+  }
+
+  .nav-text {
+    font-size: 12px;
+    color: ${(props) => (props.active ? "#06c755" : "#666")};
+  }
 `;
 
 export default InfoComponent;

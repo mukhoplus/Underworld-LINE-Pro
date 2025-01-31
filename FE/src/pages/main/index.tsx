@@ -1,4 +1,4 @@
-import { Col, Row } from "antd";
+import { Col } from "antd";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { RoomDto } from "src/interfaces/Room";
@@ -119,21 +119,24 @@ const Main: React.FC = () => {
   );
 
   return (
-    <Row>
-      <ColWrapper>
+    <MainWrapper>
+      {roomId === 0 ? (
         <InfoComponent {...infoProps} />
-      </ColWrapper>
-      <ColWrapper>
+      ) : (
         <ChatComponent {...chatProps} />
-      </ColWrapper>
-    </Row>
+      )}
+    </MainWrapper>
   );
 };
 
-const ColWrapper = styled(Col)`
+const MainWrapper = styled(Col)`
+  width: 100%;
+  height: 100vh;
+  max-width: 452px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
   border: 1px solid gray;
-  width: 452px;
-  height: 602px;
 `;
 
 export default Main;
