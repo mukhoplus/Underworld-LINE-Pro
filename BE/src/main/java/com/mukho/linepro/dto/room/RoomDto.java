@@ -18,4 +18,5 @@ public class RoomDto {
 	private LocalDateTime updatedAt;
 	private int lastReadChatId;
 	private int notReadCount;
+	private int participantCount;
 }

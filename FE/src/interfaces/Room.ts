@@ -26,10 +26,14 @@ export interface RoomDto {
   updatedAt: string; // ISO 8601 형식의 날짜 문자열
   lastReadChatId: number;
   notReadCount: number;
+  participantCount: number; // 참여자 수
 }
 
 export interface CreateRoomDto {
-  roomType: RoomType;
-  name?: string;
+  roomName?: string;
   participants: number[]; // userId array
+}
+
+export interface RoomParticipantDto {
+  name: string;
 }

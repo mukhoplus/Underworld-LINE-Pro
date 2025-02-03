@@ -19,7 +19,15 @@ public class ChatServiceImpl implements ChatService {
 
 	@Override
 	public List<ChatDto> getChatList(int roomId) {
-		return chatMapper.getChatListByRoomId(roomId);
+		List<ChatDto> a = null;
+		try {
+			a = chatMapper.getChatListByRoomId(roomId);
+
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+
+		return a;
 	}
 
 	@Override

@@ -5,6 +5,7 @@ import java.util.List;
 import com.mukho.linepro.domain.Room;
 import com.mukho.linepro.dto.room.CreateGroupRoomDto;
 import com.mukho.linepro.dto.room.RoomDto;
+import com.mukho.linepro.dto.room.RoomParticipantDto;
 
 public interface RoomService {
 	int createOneToOneRoom(int userId1, int userId2);
@@ -24,4 +25,6 @@ public interface RoomService {
 	String getRoomType(int roomId);
 
 	String getRoomName(int roomId, int userId);
+
+	List<RoomParticipantDto> getRoomParticipants(int roomId, int currentUserId);
 }

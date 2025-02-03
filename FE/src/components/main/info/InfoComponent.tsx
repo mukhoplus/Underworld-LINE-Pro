@@ -8,8 +8,10 @@ import styled from "styled-components";
 
 import { axiosRequest } from "../../../services/AxiosService";
 import NavigationBar from "./navigation/NavigationBar";
+import CreateRoomModal from "./room/CreateRoomModal";
 import RoomComponent from "./room/RoomComponent";
 import UserComponent from "./user/UserComponent";
+
 interface InfoComponentProps {
   userId: number;
   setUserId: (id: number) => void;
@@ -34,6 +36,7 @@ const InfoComponent: React.FC<InfoComponentProps> = ({
   allNotReadCount,
 }) => {
   const [menu, setMenu] = useState<number>(0);
+  const [isCreateRoomModalOpen, setIsCreateRoomModalOpen] = useState(false);
 
   const handleUserList = async () => {
     axiosRequest("get", "/user/list")
@@ -73,6 +76,9 @@ const InfoComponent: React.FC<InfoComponentProps> = ({
     <InfoWrapper>
       <Header>
         <h2>{menu === 0 ? "친구" : "채팅"}</h2>
+        <AddButton onClick={() => setIsCreateRoomModalOpen(true)}>
+          <span>+</span>
+        </AddButton>
       </Header>
       <ContentArea>
         {menu === 0 ? (
@@ -93,6 +99,13 @@ const InfoComponent: React.FC<InfoComponentProps> = ({
         resetStates={resetStates}
         allNotReadCount={allNotReadCount}
       />
+      <CreateRoomModal
+        isOpen={isCreateRoomModalOpen}
+        onClose={() => setIsCreateRoomModalOpen(false)}
+        userList={userList}
+        userId={userId}
+        onRoomCreated={handleRoomList}
+      />
     </InfoWrapper>
   );
 };
@@ -111,6 +124,7 @@ const Header = styled.div`
   padding: 0 20px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   border-bottom: 1px solid gainsboro;
 
   h2 {
@@ -122,6 +136,30 @@ const Header = styled.div`
 const ContentArea = styled.div`
   flex: 1;
   overflow-y: auto;
+`;
+
+const AddButton = styled.button`
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #4caf50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: rgba(76, 175, 80, 0.1);
+  }
+
+  span {
+    line-height: 1;
+  }
 `;
 
 export default InfoComponent;

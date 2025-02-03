@@ -3,7 +3,7 @@ import "./ChatComponent.css";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { Button, Input } from "antd";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { RoomDto } from "src/interfaces/Room";
+import { RoomDto, RoomParticipantDto, RoomType } from "src/interfaces/Room";
 import styled from "styled-components";
 
 import { ChatDto } from "../../../interfaces/Chat";
@@ -13,6 +13,7 @@ import SocketService from "../../../services/SocketService";
 import { LongStringUtil } from "../../../utils/LongStringUtil";
 import { isInNotReadMessages } from "../../../utils/MessageUtil";
 import ChatList from "./list/ChatList";
+import ParticipantsModal from "./modal/ParticipantsModal";
 
 interface ChatComponentProps {
   userId: number;
@@ -35,9 +36,13 @@ const ChatComponent: React.FC<ChatComponentProps> = ({
 }) => {
   const [inputMessage, setInputMessage] = useState<string>("");
   const [prevHeight, setPrevHeight] = useState<number>(0);
+  const [isParticipantsModalOpen, setIsParticipantsModalOpen] = useState(false);
+  const [participants, setParticipants] = useState<RoomParticipantDto[]>([]);
   const chatListRef = useRef<HTMLDivElement | null>(null);
   const chatInputRef = useRef<HTMLDivElement>(null);
   let dateOutput: { [key: string]: boolean } = {};
+
+  const currentRoom = roomList.find((room) => room.roomId === roomId);
 
   const getRoomNameByRoomId = useCallback((roomList: any, roomId: number) => {
     const getRoomNameInRoomList = (roomList: any, roomId: number) => {
@@ -88,6 +93,16 @@ const ChatComponent: React.FC<ChatComponentProps> = ({
       })
       .catch(() => {});
   };
+
+  const fetchParticipants = useCallback(async () => {
+    try {
+      const response = await axiosRequest(
+        "get",
+        `/room/${roomId}/participants/${userId}`
+      );
+      setParticipants(response.data);
+    } catch (error) {}
+  }, [roomId, userId]);
 
   const handleEnterKey = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
@@ -164,6 +179,12 @@ const ChatComponent: React.FC<ChatComponentProps> = ({
     scrollToBottom();
   }, [chatList, scrollToBottom]);
 
+  useEffect(() => {
+    if (isParticipantsModalOpen) {
+      fetchParticipants();
+    }
+  }, [isParticipantsModalOpen, fetchParticipants]);
+
   return (
     <ChatWrapper>
       <ChatHeader>
@@ -174,9 +195,16 @@ const ChatComponent: React.FC<ChatComponentProps> = ({
           }}
           onClick={handleBack}
         />
-        <span className="room-name">
-          {LongStringUtil(getRoomNameByRoomId(roomList, roomId), 20)}
-        </span>
+        <RoomInfo>
+          <span className="room-name">
+            {LongStringUtil(getRoomNameByRoomId(roomList, roomId), 20)}
+          </span>
+          {currentRoom?.roomType === RoomType.GROUP && (
+            <ParticipantCount onClick={() => setIsParticipantsModalOpen(true)}>
+              {currentRoom.participantCount}
+            </ParticipantCount>
+          )}
+        </RoomInfo>
       </ChatHeader>
       <ChatContent ref={chatListRef}>
         <ChatList
@@ -216,6 +244,11 @@ const ChatComponent: React.FC<ChatComponentProps> = ({
           전송
         </Button>
       </ChatInput>
+      <ParticipantsModal
+        isOpen={isParticipantsModalOpen}
+        onClose={() => setIsParticipantsModalOpen(false)}
+        participants={participants}
+      />
     </ChatWrapper>
   );
 };
@@ -248,6 +281,25 @@ const ChatInput = styled.div`
   min-height: 40px;
   border-top: 1px solid gainsboro;
   align-items: end;
+`;
+
+const RoomInfo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+const ParticipantCount = styled.span`
+  color: #666;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px 4px;
+  border-radius: 12px;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #f5f5f5;
+  }
 `;
 
 export default ChatComponent;

@@ -7,5 +7,5 @@ import lombok.Data;
 @Data
 public class CreateGroupRoomDto {
 	private String roomName;
-	private List<Integer> userIds;
+	private List<Integer> participants;
 }
