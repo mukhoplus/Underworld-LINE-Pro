@@ -74,11 +74,21 @@ src/
 ├── components/         # 리액트 컴포넌트
 │   ├── hello/         # 로그인/회원가입 관련
 │   └── main/          # 메인 채팅 관련
-├── interfaces/        # TypeScript 타입 정의
-├── services/         # API 및 WebSocket 서비스
-├── stores/           # Recoil 상태 관리
-├── styles/           # 공통 스타일
-└── utils/            # 유틸리티 함수
+│       ├── chat/      # 채팅 관련 컴포넌트
+│       │   ├── list/  # 채팅 목록
+│       │   └── modal/ # 단체 채팅방 참여자 모달
+│       └── info/      # 정보 표시 관련 컴포넌트
+│           ├── navigation/  # 네비게이션 바
+│           ├── room/        # 채팅방 관련 컴포넌트
+│           └── user/        # 사용자 관련 컴포넌트
+├── interfaces/         # TypeScript 타입 정의
+├── pages/             # 페이지 컴포넌트
+│   ├── hello/         # 로그인/회원가입 관련
+│   └── main/          # 서비스 관련
+├── services/          # API 및 WebSocket 서비스
+├── stores/            # Recoil 상태 관리
+├── styles/            # 공통 스타일
+└── utils/             # 유틸리티 함수
 ```
 
 ### Backend (BE/)
@@ -87,12 +97,21 @@ src/
 src/main/
 ├── java/
 │   └── com/mukho/linepro/
-│       ├── config/     # 설정 파일
-│       ├── controller/ # API 컨트롤러
-│       ├── dto/        # 데이터 전송 객체
-│       ├── mapper/     # MyBatis 매퍼
-│       └── service/    # 비즈니스 로직
+│       ├── config/           # 설정 파일
+│       ├── controller/       # API 컨트롤러
+│       ├── domain/          # 도메인 모델
+│       ├── dto/             # 데이터 전송 객체
+│       │   ├── chat/
+│       │   ├── room/
+│       │   └── user/
+│       ├── filter/          # 필터
+│       ├── handler/         # WebSocket 핸들러
+│       ├── interceptor/     # 인터셉터
+│       ├── listener/        # 이벤트 리스너
+│       ├── mapper/          # MyBatis 매퍼
+│       └── service/         # 비즈니스 로직 인터페이스
+│           └── impl/        # 비즈니스 로직 구현
 └── resources/
-    ├── mapper/        # SQL 매퍼 XML
-    └── application.yml # 애플리케이션 설정
+    ├── mapper/             # SQL 매퍼 XML
+    └── mybatis/           # MyBatis 설정
 ```
