@@ -12,6 +12,7 @@ import com.mukho.linepro.domain.Room;
 import com.mukho.linepro.domain.RoomType;
 import com.mukho.linepro.dto.room.CreateGroupRoomDto;
 import com.mukho.linepro.dto.room.RoomDto;
+import com.mukho.linepro.dto.room.RoomParticipantDto;
 import com.mukho.linepro.dto.user.LoginUserDto;
 import com.mukho.linepro.mapper.RoomMapper;
 import com.mukho.linepro.mapper.RoomParticipantsMapper;
@@ -49,9 +50,10 @@ public class RoomServiceImpl implements RoomService {
 		room.setName(dto.getRoomName());
 		room.setLastMessage("");
 
-		int roomId = roomMapper.createRoom(room);
+		roomMapper.createRoom(room);
+		int roomId = room.getRoomId();
 
-		for (Integer userId : dto.getUserIds()) {
+		for (Integer userId : dto.getParticipants()) {
 			participantsMapper.addParticipant(roomId, userId);
 		}
 
@@ -156,5 +158,10 @@ public class RoomServiceImpl implements RoomService {
 		}
 
 		return roomId;
+	}
+
+	@Override
+	public List<RoomParticipantDto> getRoomParticipants(int roomId, int currentUserId) {
+		return roomMapper.getRoomParticipants(roomId, currentUserId);
 	}
 }

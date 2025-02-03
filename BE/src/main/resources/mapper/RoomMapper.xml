@@ -20,12 +20,12 @@
     </update>
 
     <select id="getRoomListByUserId" resultType="com.mukho.linepro.dto.room.RoomDto">
-        SELECT r.room_id            as roomId,
-               r.room_type          as roomType,
-               r.name               as roomName,
-               r.last_message       as lastMessage,
-               r.updated_at         as updatedAt,
-               rp.last_read_chat_id as lastReadChatId,
+        SELECT r.room_id                       as roomId,
+               r.room_type                     as roomType,
+               r.name                          as roomName,
+               r.last_message                  as lastMessage,
+               r.updated_at                    as updatedAt,
+               rp.last_read_chat_id            as lastReadChatId,
                (SELECT CASE
                            WHEN EXISTS (SELECT 1
                                         FROM chat c
@@ -38,7 +38,10 @@
                                   AND c.chat_id > COALESCE(rp.last_read_chat_id, 0)
                                   AND c.send_user_id != #{userId})
                            ELSE 0
-                           END)     as notReadCount
+                           END)                as notReadCount,
+               (SELECT COUNT(rp2.user_id)
+                FROM room_participants rp2
+                WHERE rp2.room_id = r.room_id) as participantCount
         FROM room r
                  JOIN room_participants rp ON r.room_id = rp.room_id
         WHERE rp.user_id = #{userId}
@@ -78,4 +81,12 @@
         LIMIT 1
     </select>
 
+    <select id="getRoomParticipants" resultType="com.mukho.linepro.dto.room.RoomParticipantDto">
+        SELECT u.name as name
+        FROM room_participants rp
+                 INNER JOIN user u ON rp.user_id = u.user_id
+        WHERE rp.room_id = #{roomId}
+        ORDER BY CASE WHEN rp.user_id = #{currentUserId} THEN 0 ELSE 1 END,
+                 u.name ASC
+    </select>
 </mapper>

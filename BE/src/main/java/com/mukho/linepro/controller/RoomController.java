@@ -3,6 +3,7 @@ package com.mukho.linepro.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +16,7 @@ import com.mukho.linepro.domain.Room;
 import com.mukho.linepro.dto.room.CreateGroupRoomDto;
 import com.mukho.linepro.dto.room.CreateOneToOneRoomDto;
 import com.mukho.linepro.dto.room.RoomDto;
+import com.mukho.linepro.dto.room.RoomParticipantDto;
 import com.mukho.linepro.service.RoomService;
 
 @RestController
@@ -69,4 +71,17 @@ public class RoomController {
 		}
 	}
 
+	@GetMapping("/{roomId}/participants/{currentUserId}")
+	public ResponseEntity<List<RoomParticipantDto>> getRoomParticipants(
+		@PathVariable int roomId, @PathVariable int currentUserId
+	) {
+		try {
+			List<RoomParticipantDto> participants = roomService.getRoomParticipants(roomId, currentUserId);
+			return ResponseEntity.ok(participants);
+		} catch (IllegalArgumentException e) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+	}
 }
