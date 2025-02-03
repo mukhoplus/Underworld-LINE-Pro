@@ -6,6 +6,7 @@ import com.mukho.linepro.dto.chat.ChatDto;
 import com.mukho.linepro.dto.chat.SendChatDto;
 
 public interface ChatService {
-    List<ChatDto> getChatList(int roomId);
-    int sendChat(SendChatDto sendChatDto);
+	List<ChatDto> getChatList(int roomId);
+
+	int sendChat(SendChatDto sendChatDto);
 }

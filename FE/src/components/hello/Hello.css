@@ -9,11 +9,32 @@
   -webkit-touch-callout: none;
 }
 
+.id {
+  width: 100%;
+  min-width: 300px;
+}
+
+.password {
+  width: 100%;
+  min-width: 300px;
+}
+
 .form-btn {
+  width: 100%;
+  min-width: 300px;
   display: flex;
-  justify-content: space-around;
+  flex-direction: row;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 0;
 }
 
 .hello-btn {
-  width: 150px;
+  width: 145px;
+  height: 40px;
+}
+
+.ant-form-item {
+  width: 100%;
+  box-sizing: border-box;
 }

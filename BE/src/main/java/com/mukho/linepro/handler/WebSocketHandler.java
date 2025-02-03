@@ -5,9 +5,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-import com.mukho.linepro.service.RoomParticipantsService;
-import jakarta.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
@@ -25,118 +22,126 @@ import com.mukho.linepro.dto.chat.SocketSendDto;
 import com.mukho.linepro.dto.room.RoomDto;
 import com.mukho.linepro.dto.user.LoginUserDto;
 import com.mukho.linepro.service.ChatService;
+import com.mukho.linepro.service.RoomParticipantsService;
 import com.mukho.linepro.service.RoomService;
+
+import jakarta.servlet.http.HttpSession;
 
 @Component
 public class WebSocketHandler extends TextWebSocketHandler {
-    private Map<Integer, WebSocketSession> sessions = new ConcurrentHashMap<>();
+	private final Map<Integer, WebSocketSession> sessions = new ConcurrentHashMap<>();
 
-    private RoomService roomService;
-    private ChatService chatService;
-    private RoomParticipantsService participantsService;
+	private final RoomService roomService;
+	private final ChatService chatService;
+	private final RoomParticipantsService participantsService;
 
-    @Autowired
-    public WebSocketHandler(RoomService roomService, ChatService chatService, RoomParticipantsService participantsService) {
-        this.roomService = roomService;
-        this.chatService = chatService;
-        this.participantsService = participantsService;
-    }
+	@Autowired
+	public WebSocketHandler(RoomService roomService, ChatService chatService,
+		RoomParticipantsService participantsService) {
+		this.roomService = roomService;
+		this.chatService = chatService;
+		this.participantsService = participantsService;
+	}
 
-    @Override
-    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        int userId = 0;
+	@Override
+	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+		int userId = 0;
 
-        try {
-            HttpSession curUserSession = (HttpSession) session.getAttributes().get("httpSession");
-            LoginUserDto loginUserDto = (LoginUserDto)curUserSession.getAttribute("loginUser");
+		try {
+			HttpSession curUserSession = (HttpSession)session.getAttributes().get("httpSession");
+			LoginUserDto loginUserDto = (LoginUserDto)curUserSession.getAttribute("loginUser");
 
-            userId = loginUserDto.getUserId();
-        } catch(Exception e) {
-            System.out.println(e.getMessage());
-//            if (session.getUri() == null) return;
-//
-//            String value = session.getUri().getQuery().split("=")[1];
-//            userId = Integer.parseInt(value);
-        }
+			userId = loginUserDto.getUserId();
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			//            if (session.getUri() == null) return;
+			//
+			//            String value = session.getUri().getQuery().split("=")[1];
+			//            userId = Integer.parseInt(value);
+		}
 
-        session.getAttributes().put("userId", userId);
+		session.getAttributes().put("userId", userId);
 
-        super.afterConnectionEstablished(session);
-        sessions.put(userId, session);
-    }
+		super.afterConnectionEstablished(session);
+		sessions.put(userId, session);
+	}
 
-    @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        try {
-            HttpSession curUserSession = (HttpSession) session.getAttributes().get("httpSession");
-            LoginUserDto loginUserDto = (LoginUserDto)curUserSession.getAttribute("loginUser");
-            int userId = loginUserDto.getUserId();
+	@Override
+	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+		try {
+			HttpSession curUserSession = (HttpSession)session.getAttributes().get("httpSession");
+			LoginUserDto loginUserDto = (LoginUserDto)curUserSession.getAttribute("loginUser");
+			int userId = loginUserDto.getUserId();
 
-            super.afterConnectionClosed(session, status);
-            sessions.remove(userId);
-            // curUserSession.invalidate();
-        } catch (Exception e) {
+			super.afterConnectionClosed(session, status);
+			sessions.remove(userId);
+			// curUserSession.invalidate();
+		} catch (Exception e) {
 
-        }
-    }
+		}
+	}
 
-    @Override
-    protected void handleTextMessage(WebSocketSession session, TextMessage testMessage) throws Exception {
-        try {
-            String receivedMessage = testMessage.getPayload();
-            ObjectMapper objectMapper = new ObjectMapper();
+	@Override
+	protected void handleTextMessage(WebSocketSession session, TextMessage testMessage) throws Exception {
+		try {
+			String receivedMessage = testMessage.getPayload();
+			ObjectMapper objectMapper = new ObjectMapper();
 
-            SocketSendDto socketSendDto = objectMapper.readValue(receivedMessage, SocketSendDto.class);
-            SendChatDto sendChatDto = socketSendDto.getData();
+			SocketSendDto socketSendDto = objectMapper.readValue(receivedMessage, SocketSendDto.class);
+			SendChatDto sendChatDto = socketSendDto.getData();
 
-            int roomId = sendChatDto.getRoomId();
-            int sendUserId = sendChatDto.getSendUserId();
-            List<Integer> receiveUserIdList = getReceiveUserIdList(roomId, sendUserId);
+			int roomId = sendChatDto.getRoomId();
+			int sendUserId = sendChatDto.getSendUserId();
+			List<Integer> receiveUserIdList = getReceiveUserIdList(roomId, sendUserId);
 
-            if (socketSendDto.getType().equals("chat")) {
-                String message = sendChatDto.getMessage();
-                roomService.updateRoom(roomId, message);
+			if (socketSendDto.getType().equals("chat")) {
+				String message = sendChatDto.getMessage();
+				roomService.updateRoom(roomId, message);
 
-                int lastChatId = chatService.sendChat(new SendChatDto(roomId, sendUserId, message));
-                participantsService.updateLastReadChat(roomId, sendUserId, lastChatId);
-            } else {
-                List<ChatDto> chatList = chatService.getChatList(roomId);
+				int lastChatId = chatService.sendChat(new SendChatDto(roomId, sendUserId, message));
+				participantsService.updateLastReadChat(roomId, sendUserId, lastChatId);
+			} else {
+				List<ChatDto> chatList = chatService.getChatList(roomId);
 
-                if (!chatList.isEmpty()) {
-                    int lastChatId = chatList.get(chatList.size() - 1).getChatId();
-                    participantsService.updateLastReadChat(roomId, sendUserId, lastChatId);
-                }
-            }
+				if (!chatList.isEmpty()) {
+					int lastChatId = chatList.get(chatList.size() - 1).getChatId();
+					participantsService.updateLastReadChat(roomId, sendUserId, lastChatId);
+				}
+			}
 
-            objectMapper = new ObjectMapper();
-            objectMapper.registerModule(new JavaTimeModule());
+			objectMapper = new ObjectMapper();
+			objectMapper.registerModule(new JavaTimeModule());
 
-            List<RoomDto> sendRoomList = getRoomListByUserId(sendUserId);
-            List<ChatDto> chatList = chatService.getChatList(roomId);
-            ChatResponseDto chatResponseDto = new ChatResponseDto(roomId, chatList);
+			List<RoomDto> sendRoomList = getRoomListByUserId(sendUserId);
+			List<ChatDto> chatList = chatService.getChatList(roomId);
+			ChatResponseDto chatResponseDto = new ChatResponseDto(roomId, chatList);
 
-            SocketResponseDto sendUserDto = new SocketResponseDto(sendRoomList, chatResponseDto);
-            sessions.get(sendUserId).sendMessage(new TextMessage(objectMapper.writeValueAsString(sendUserDto)));
+			SocketResponseDto sendUserDto = new SocketResponseDto(sendRoomList, chatResponseDto);
+			sessions.get(sendUserId).sendMessage(new TextMessage(objectMapper.writeValueAsString(sendUserDto)));
 
-            for (Integer receiveUserId : receiveUserIdList) {
-                if (sessions.containsKey(receiveUserId) && sessions.get(receiveUserId).isOpen()) {
-                    List<RoomDto> receiveRoomList = getRoomListByUserId(receiveUserId);
-                    SocketResponseDto receiveUserDto = new SocketResponseDto(receiveRoomList, chatResponseDto);
-                    sessions.get(receiveUserId).sendMessage(new TextMessage(objectMapper.writeValueAsString(receiveUserDto)));
-                }
-            }
-        } catch (Exception e) {}
-    }
+			for (Integer receiveUserId : receiveUserIdList) {
+				if (sessions.containsKey(receiveUserId) && sessions.get(receiveUserId).isOpen()) {
+					List<RoomDto> receiveRoomList = getRoomListByUserId(receiveUserId);
+					SocketResponseDto receiveUserDto = new SocketResponseDto(receiveRoomList, chatResponseDto);
+					sessions.get(receiveUserId)
+						.sendMessage(new TextMessage(objectMapper.writeValueAsString(receiveUserDto)));
+				}
+			}
+		} catch (Exception e) {
+		}
+	}
 
-    public List<Integer> getReceiveUserIdList(int roomId, int sendUserId) {
-        List<Integer> participants = participantsService.getParticipantsByRoomId(roomId);
-        List<Integer> receiveUserIdList = participants.stream().filter(userId -> userId != sendUserId).collect(Collectors.toList());
+	public List<Integer> getReceiveUserIdList(int roomId, int sendUserId) {
+		List<Integer> participants = participantsService.getParticipantsByRoomId(roomId);
+		List<Integer> receiveUserIdList = participants.stream()
+			.filter(userId -> userId != sendUserId)
+			.collect(Collectors.toList());
 
-        return receiveUserIdList;
-    }
+		return receiveUserIdList;
+	}
 
-    public List<RoomDto> getRoomListByUserId(int userId) {
-        return roomService.getRoomListByUserId(userId);
-    }
+	public List<RoomDto> getRoomListByUserId(int userId) {
+		return roomService.getRoomListByUserId(userId);
+	}
 
 }

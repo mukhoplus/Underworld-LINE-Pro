@@ -5,6 +5,7 @@ import { TeamOutlined } from "@ant-design/icons";
 import { Avatar, Badge } from "antd";
 import React, { useCallback } from "react";
 import { RoomDto, RoomType } from "src/interfaces/Room";
+import styled from "styled-components";
 
 import { getRoomDateTime } from "../../../../utils/DateTimeUtil";
 import { LongStringUtil } from "../../../../utils/LongStringUtil";
@@ -41,10 +42,13 @@ const RoomComponent: React.FC<RoomComponentProps> = React.memo(
                 alignItems: "center",
               }}
             >
-              <Avatar style={{ margin: "0px 10px 0px 10px" }} />
+              <Avatar size={50} style={{ margin: "0px 10px 0px 0px" }} />
             </div>
             <div className="info">
-              <div className="line">
+              <div
+                className="line"
+                style={{ display: "flex", alignItems: "center" }}
+              >
                 <div
                   className="name"
                   style={{ display: "flex", alignItems: "center" }}
@@ -62,13 +66,16 @@ const RoomComponent: React.FC<RoomComponentProps> = React.memo(
                   ) : room.roomType === RoomType.GROUP ? (
                     <>
                       <Badge
-                        count={<TeamOutlined style={{ color: "#fff" }} />}
+                        count={<TeamOutlined style={{ color: "#06c755" }} />}
                         style={{
-                          backgroundColor: "#1890ff",
+                          backgroundColor: "#fff",
                           marginRight: "4px",
                         }}
                       />
                       <span>{LongStringUtil(room.roomName, 15)}</span>
+                      <ParticipantCount>
+                        {room.participantCount}
+                      </ParticipantCount>
                     </>
                   ) : (
                     <span>{LongStringUtil(room.roomName, 15)}</span>
@@ -91,5 +98,11 @@ const RoomComponent: React.FC<RoomComponentProps> = React.memo(
     );
   }
 );
+
+const ParticipantCount = styled.span`
+  color: #666;
+  font-size: 12px;
+  margin-left: 4px;
+`;
 
 export default RoomComponent;

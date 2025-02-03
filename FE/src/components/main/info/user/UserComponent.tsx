@@ -74,7 +74,7 @@ const UserComponent = ({
           }}
           onClick={() => handleChatIdToRoomId(user.userId)}
         >
-          <Avatar style={{ margin: "0px 10px 0px 10px" }} />
+          <Avatar size={50} style={{ margin: "0px 10px 0px 10px" }} />
           {user.userId === userId ? (
             <>
               <Badge count="나" style={{ backgroundColor: "#06c755" }} />

@@ -209,7 +209,7 @@ const SignupComponent: React.FC<SignupComponentProps> = ({ setPage }) => {
       <Form.Item className="form-btn">
         <Button
           className="hello-btn"
-          style={{ border: "1px solid lightgray" }}
+          style={{ border: "1px solid lightgray", marginRight: "10px" }}
           onClick={() => setPage(0)}
         >
           뒤로가기
@@ -217,7 +217,7 @@ const SignupComponent: React.FC<SignupComponentProps> = ({ setPage }) => {
         <Button
           type="primary"
           className="hello-btn"
-          style={{ backgroundColor: "#06c755", marginLeft: "60px" }}
+          style={{ backgroundColor: "#06c755" }}
           onClick={handleSignup}
         >
           회원가입
@@ -228,8 +228,7 @@ const SignupComponent: React.FC<SignupComponentProps> = ({ setPage }) => {
 };
 
 const SignupForm = styled(Form)`
-  padding-top: 30%;
-  width: 80%;
+  width: 100%;
   margin: 0 auto;
   flex-direction: column;
   align-items: center;

@@ -9,27 +9,27 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 import com.mukho.linepro.handler.WebSocketHandler;
 import com.mukho.linepro.interceptor.HttpSessionHandshakeInterceptor;
 import com.mukho.linepro.service.ChatService;
-import com.mukho.linepro.service.RoomService;
 import com.mukho.linepro.service.RoomParticipantsService;
+import com.mukho.linepro.service.RoomService;
 
 @Configuration
 @EnableWebSocket
 public class WebSocketConfig implements WebSocketConfigurer {
 
-    @Autowired
-    private RoomService roomService;
+	@Autowired
+	private RoomService roomService;
 
-    @Autowired
-    private ChatService chatService;
+	@Autowired
+	private ChatService chatService;
 
-    @Autowired
-    private RoomParticipantsService participantsService;
+	@Autowired
+	private RoomParticipantsService participantsService;
 
-    @Override
-    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(new WebSocketHandler(roomService, chatService, participantsService), "/socket")
-                .setAllowedOrigins("*")
-                .addInterceptors(new HttpSessionHandshakeInterceptor());
-    }
+	@Override
+	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+		registry.addHandler(new WebSocketHandler(roomService, chatService, participantsService), "/socket")
+			.setAllowedOrigins("*")
+			.addInterceptors(new HttpSessionHandshakeInterceptor());
+	}
 
 }

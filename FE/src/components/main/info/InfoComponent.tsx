@@ -1,11 +1,5 @@
 import "./InfoComponent.css";
 
-import {
-  LogoutOutlined,
-  MessageOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
-import { Badge, Button, Col, Row } from "antd";
 import { useEffect, useState } from "react";
 import { ChatDto } from "src/interfaces/Chat";
 import { RoomDto } from "src/interfaces/Room";
@@ -13,7 +7,8 @@ import { UserListDto } from "src/interfaces/User";
 import styled from "styled-components";
 
 import { axiosRequest } from "../../../services/AxiosService";
-import SocketService from "../../../services/SocketService";
+import NavigationBar from "./navigation/NavigationBar";
+import CreateRoomModal from "./room/CreateRoomModal";
 import RoomComponent from "./room/RoomComponent";
 import UserComponent from "./user/UserComponent";
 
@@ -41,22 +36,13 @@ const InfoComponent: React.FC<InfoComponentProps> = ({
   allNotReadCount,
 }) => {
   const [menu, setMenu] = useState<number>(0);
+  const [isCreateRoomModalOpen, setIsCreateRoomModalOpen] = useState(false);
 
   const handleUserList = async () => {
     axiosRequest("get", "/user/list")
       .then((response) => {
         const data = response.data;
         setUserList(data);
-      })
-      .catch(() => {
-        resetStates();
-      });
-  };
-
-  const handleRoomList = async () => {
-    axiosRequest("get", `/room/list/${userId}`)
-      .then((response) => {
-        setRoomList(response.data);
       })
       .catch(() => {
         resetStates();
@@ -71,86 +57,109 @@ const InfoComponent: React.FC<InfoComponentProps> = ({
     setChatList([]);
   };
 
+  const handleRoomList = async () => {
+    axiosRequest("get", `/room/list/${userId}`)
+      .then((response) => {
+        setRoomList(response.data);
+      })
+      .catch(() => {
+        resetStates();
+      });
+  };
+
   useEffect(() => {
     handleUserList();
     handleRoomList();
   }, [userId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <>
-      <InfoWrapper>
-        <Col style={{ borderRight: "1px solid gainsboro" }}>
-          <Row>
-            <Button className="btn-icon" onClick={() => setMenu(0)}>
-              <UserOutlined
-                className="icon"
-                style={{ color: menu === 0 ? "#06c755" : "" }}
-              />
-            </Button>
-          </Row>
-          <Row>
-            <Button className="btn-icon" onClick={() => setMenu(1)}>
-              <Badge
-                style={{ fontSize: "10px" }}
-                count={allNotReadCount}
-                overflowCount={999}
-              >
-                <MessageOutlined
-                  className="icon"
-                  style={{ color: menu === 1 ? "#06c755" : "" }}
-                />
-              </Badge>
-            </Button>
-          </Row>
-          <Row>
-            <div className="btn-icon-temp" />
-          </Row>
-          <Row>
-            <Button
-              className="btn-icon"
-              onClick={() => {
-                axiosRequest("post", "/user/logout")
-                  .then(() => {
-                    SocketService.close();
-                  })
-                  .catch()
-                  .finally(() => {
-                    resetStates();
-                  });
-              }}
-            >
-              <LogoutOutlined className="icon" />
-            </Button>
-          </Row>
-        </Col>
-        <ContentCol>
-          {menu === 0 ? (
-            <UserComponent
-              userId={userId}
-              userList={userList}
-              setRoomId={setRoomId}
-              roomList={roomList}
-              setRoomList={setRoomList}
-            />
-          ) : (
-            <RoomComponent setRoomId={setRoomId} roomList={roomList} />
-          )}
-        </ContentCol>
-      </InfoWrapper>
-    </>
+    <InfoWrapper>
+      <Header>
+        <h2>{menu === 0 ? "친구" : "채팅"}</h2>
+        <AddButton onClick={() => setIsCreateRoomModalOpen(true)}>
+          <span>+</span>
+        </AddButton>
+      </Header>
+      <ContentArea>
+        {menu === 0 ? (
+          <UserComponent
+            userId={userId}
+            userList={userList}
+            setRoomId={setRoomId}
+            roomList={roomList}
+            setRoomList={setRoomList}
+          />
+        ) : (
+          <RoomComponent setRoomId={setRoomId} roomList={roomList} />
+        )}
+      </ContentArea>
+      <NavigationBar
+        menu={menu}
+        setMenu={setMenu}
+        resetStates={resetStates}
+        allNotReadCount={allNotReadCount}
+      />
+      <CreateRoomModal
+        isOpen={isCreateRoomModalOpen}
+        onClose={() => setIsCreateRoomModalOpen(false)}
+        userList={userList}
+        userId={userId}
+        onRoomCreated={handleRoomList}
+      />
+    </InfoWrapper>
   );
 };
 
 const InfoWrapper = styled.div`
   display: flex;
+  flex-direction: column;
   height: 100%;
-  overflow: hidden;
+  width: 100%;
+  max-width: 450px;
+  margin: 0 auto;
 `;
 
-const ContentCol = styled(Col)`
-  max-width: calc(100% - 50px);
-  height: 100%;
-  overflow: auto;
+const Header = styled.div`
+  height: 60px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid gainsboro;
+
+  h2 {
+    margin: 0;
+    font-size: 20px;
+  }
+`;
+
+const ContentArea = styled.div`
+  flex: 1;
+  overflow-y: auto;
+`;
+
+const AddButton = styled.button`
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #4caf50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: rgba(76, 175, 80, 0.1);
+  }
+
+  span {
+    line-height: 1;
+  }
 `;
 
 export default InfoComponent;

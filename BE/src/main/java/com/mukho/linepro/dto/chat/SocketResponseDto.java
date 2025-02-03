@@ -12,6 +12,6 @@ import lombok.Data;
 @AllArgsConstructor
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class SocketResponseDto {
-    List<RoomDto> roomList;
-    ChatResponseDto chatResponseDto;
+	List<RoomDto> roomList;
+	ChatResponseDto chatResponseDto;
 }

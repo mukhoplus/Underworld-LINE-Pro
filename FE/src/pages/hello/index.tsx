@@ -3,6 +3,7 @@ import styled from "styled-components";
 
 import LoginComponent from "../../components/hello/LoginComponent";
 import SignupComponent from "../../components/hello/SignupComponent";
+import { breakpoints } from "../../styles/CommonStyles";
 
 const Hello: React.FC = () => {
   const [page, setPage] = useState(0);
@@ -19,9 +20,19 @@ const Hello: React.FC = () => {
 };
 
 const HelloWrapper = styled.div`
-  border: 1px solid gray;
-  width: 452px;
-  height: 602px;
+  width: 100%;
+  min-width: 300px;
+  min-height: 100vh;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  @media screen and (max-width: ${breakpoints.mobile}) {
+    width: 300px;
+    min-width: 300px;
+  }
 `;
 
 export default Hello;
