@@ -267,6 +267,10 @@ const ChatHeader = styled.div`
   align-items: center;
   gap: 15px;
   border-bottom: 1px solid gainsboro;
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 10;
 `;
 
 const ChatContent = styled.div`
