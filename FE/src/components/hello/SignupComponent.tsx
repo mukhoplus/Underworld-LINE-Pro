@@ -14,7 +14,7 @@ import styled from "styled-components";
 import { useAuth } from "../../hooks/useAuth";
 import { SignupDto } from "../../interfaces/User";
 import { axiosRequest } from "../../services/AxiosService";
-import { warningModal } from "../../utils/ModalUtil";
+import { errorModal, successModal, warningModal } from "../../utils/ModalUtil";
 
 interface SignupComponentProps {
   setPage: (page: number) => void;
@@ -48,10 +48,13 @@ const SignupComponent: React.FC<SignupComponentProps> = ({ setPage }) => {
 
     axiosRequest("post", "/user/signup", postData)
       .then(async () => {
+        await successModal("회원가입 성공", "회원가입이 완료되었습니다.");
         await checkSession();
         setPage(0);
       })
-      .catch(() => {});
+      .catch(async () => {
+        await errorModal("회원가입 실패", "서버에 오류가 발생했습니다.");
+      });
   };
 
   const handleEnterKey = (e: React.KeyboardEvent) => {
