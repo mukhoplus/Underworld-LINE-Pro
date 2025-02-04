@@ -34,6 +34,10 @@ const AppContainer = styled.div`
     width: 100vw;
     min-width: 300px;
     height: 100dvh;
+    overflow: hidden;
+    position: fixed;
+    top: 0;
+    left: 0;
   }
 
   user-select: none;
