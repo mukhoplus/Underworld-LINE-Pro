@@ -49,7 +49,7 @@
 - 단체 채팅방
 - 실시간 메시지 전송
 - 읽지 않은 메시지 표시
-- 메시지 알림 (구현 중)
+- 메시지 알림
 
 ### 3. 채팅방 관리
 
@@ -63,7 +63,7 @@
 - **실시간 통신**: WebSocket을 활용한 실시간 양방향 통신
 - **반응형 디자인**: 모바일/데스크톱 환경 모두 지원
 - **메시지 상태 관리**: 읽음 여부 실시간 동기화
-- **알림 시스템**: 새 메시지 수신 시 브라우저 알림(구현 중)
+- **알림 시스템**: 새 메시지 수신 시 브라우저 알림
 
 ## 프로젝트 구조
 
@@ -71,24 +71,24 @@
 
 ```
 src/
-├── components/         # 리액트 컴포넌트
-│   ├── hello/         # 로그인/회원가입 관련
-│   └── main/          # 메인 채팅 관련
-│       ├── chat/      # 채팅 관련 컴포넌트
-│       │   ├── list/  # 채팅 목록
-│       │   └── modal/ # 단체 채팅방 참여자 모달
-│       └── info/      # 정보 표시 관련 컴포넌트
+├── components/              # 리액트 컴포넌트
+│   ├── hello/               # 로그인/회원가입 관련
+│   └── main/                # 메인 채팅 관련
+│       ├── chat/            # 채팅 관련 컴포넌트
+│       │   ├── list/        # 채팅 목록
+│       │   └── modal/       # 단체 채팅방 참여자 모달
+│       └── info/            # 정보 표시 관련 컴포넌트
 │           ├── navigation/  # 네비게이션 바
 │           ├── room/        # 채팅방 관련 컴포넌트
 │           └── user/        # 사용자 관련 컴포넌트
-├── interfaces/         # TypeScript 타입 정의
-├── pages/             # 페이지 컴포넌트
-│   ├── hello/         # 로그인/회원가입 관련
-│   └── main/          # 서비스 관련
-├── services/          # API 및 WebSocket 서비스
-├── stores/            # Recoil 상태 관리
-├── styles/            # 공통 스타일
-└── utils/             # 유틸리티 함수
+├── interfaces/              # TypeScript 타입 정의
+├── pages/                   # 페이지 컴포넌트
+│   ├── hello/               # 로그인/회원가입 관련
+│   └── main/                # 서비스 관련
+├── services/                # API 및 WebSocket 서비스
+├── stores/                  # Recoil 상태 관리
+├── styles/                  # 공통 스타일
+└── utils/                   # 유틸리티 함수
 ```
 
 ### Backend (BE/)
@@ -99,19 +99,19 @@ src/main/
 │   └── com/mukho/linepro/
 │       ├── config/           # 설정 파일
 │       ├── controller/       # API 컨트롤러
-│       ├── domain/          # 도메인 모델
-│       ├── dto/             # 데이터 전송 객체
+│       ├── domain/           # 도메인 모델
+│       ├── dto/              # 데이터 전송 객체
 │       │   ├── chat/
 │       │   ├── room/
 │       │   └── user/
-│       ├── filter/          # 필터
-│       ├── handler/         # WebSocket 핸들러
-│       ├── interceptor/     # 인터셉터
-│       ├── listener/        # 이벤트 리스너
-│       ├── mapper/          # MyBatis 매퍼
-│       └── service/         # 비즈니스 로직 인터페이스
-│           └── impl/        # 비즈니스 로직 구현
+│       ├── filter/           # 필터
+│       ├── handler/          # WebSocket 핸들러
+│       ├── interceptor/      # 인터셉터
+│       ├── listener/         # 이벤트 리스너
+│       ├── mapper/           # MyBatis 매퍼
+│       └── service/          # 비즈니스 로직 인터페이스
+│           └── impl/         # 비즈니스 로직 구현
 └── resources/
-    ├── mapper/             # SQL 매퍼 XML
-    └── mybatis/           # MyBatis 설정
+    ├── mapper/               # SQL 매퍼 XML
+    └── mybatis/              # MyBatis 설정
 ```

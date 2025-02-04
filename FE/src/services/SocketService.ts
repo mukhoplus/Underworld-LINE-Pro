@@ -1,24 +1,14 @@
-import { ChatDto } from "src/interfaces/Chat";
-import { RoomDto } from "src/interfaces/Room";
-import { SOCKET_URL } from "src/services/HostingService";
-
+import {
+  ChatDto,
+  ChatResponseDto,
+  SendChatDto,
+  SocketSendDto,
+} from "../interfaces/Chat";
+import { RoomDto } from "../interfaces/Room";
+import { UserListDto } from "../interfaces/User";
+import { SOCKET_URL } from "../services/HostingService";
 import { isInNotReadMessages } from "../utils/MessageUtil";
-
-interface SendChatDto {
-  roomId: number;
-  sendUserId: number;
-  message: string;
-}
-
-interface SocketSendDto {
-  type: "chat" | "read";
-  data: SendChatDto;
-}
-
-interface ChatResponseDto {
-  roomId: number;
-  chatList: ChatDto[];
-}
+import { showNotification } from "../utils/NotificationUtil";
 
 interface WebSocketData {
   roomList: RoomDto[];
@@ -27,9 +17,13 @@ interface WebSocketData {
 
 const SocketService = {
   socket: null as WebSocket | null,
-  getState: null as (() => { roomId: number; userId: number }) | null,
+  getState: null as
+    | (() => { roomId: number; userId: number; userList: UserListDto[] })
+    | null,
 
-  initialize: (getState: () => { roomId: number; userId: number }) => {
+  initialize: (
+    getState: () => { roomId: number; userId: number; userList: UserListDto[] }
+  ) => {
     SocketService.getState = getState;
   },
 
@@ -44,12 +38,32 @@ const SocketService = {
     SocketService.socket.onmessage = (event: MessageEvent) => {
       if (!SocketService.getState) return;
 
-      const { userId, roomId } = SocketService.getState();
+      const { userId, roomId, userList } = SocketService.getState();
       const data = JSON.parse(event.data) as WebSocketData;
       const { roomList, chatResponseDto } = data;
       const { roomId: responseRoomId, chatList } = chatResponseDto;
 
       setRoomList(roomList);
+
+      // 새 메시지가 있고, 현재 보고 있는 방이 아닌 경우 알림 표시
+      const getUserName = (sendUserId: number) => {
+        const user = userList.find(
+          (user: UserListDto) => user.userId === sendUserId
+        );
+        return user?.name || "";
+      };
+
+      if (chatList.length > 0 && responseRoomId !== roomId) {
+        const lastChat = chatList[chatList.length - 1];
+        const room = roomList.find((room) => room.roomId === responseRoomId);
+
+        if (lastChat && room && lastChat.sendUserId !== userId) {
+          showNotification(
+            room.roomName,
+            `${getUserName(lastChat.sendUserId)}: ${lastChat.message}`
+          );
+        }
+      }
 
       if (roomId === 0) return;
       if (roomId !== responseRoomId) return;

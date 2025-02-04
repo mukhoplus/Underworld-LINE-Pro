@@ -16,6 +16,7 @@ import {
   userListState,
 } from "../../stores/atoms";
 import { breakpoints } from "../../styles/CommonStyles";
+import { requestNotificationPermission } from "../../utils/NotificationUtil";
 
 const Main: React.FC = () => {
   const userId = useRecoilValue(userIdState);
@@ -57,6 +58,7 @@ const Main: React.FC = () => {
   useEffect(() => {
     if (userId !== 0) {
       SocketService.connect(setRoomList, setChatList);
+      requestNotificationPermission();
     }
     return () => {
       SocketService.close();
@@ -64,8 +66,8 @@ const Main: React.FC = () => {
   }, [setChatList, setRoomList, userId]);
 
   useEffect(() => {
-    SocketService.initialize(() => ({ roomId, userId }));
-  }, [userId, roomId]);
+    SocketService.initialize(() => ({ roomId, userId, userList }));
+  }, [userId, roomId, userList]);
 
   useEffect(() => {
     setAllNotReadCount(getAllNotReadCount(roomList));

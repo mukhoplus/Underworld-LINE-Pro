@@ -34,6 +34,6 @@ export interface SocketResponseDto {
 }
 
 export interface SocketSendDto {
-  type: string;
+  type: "chat" | "read";
   data: SendChatDto;
 }
