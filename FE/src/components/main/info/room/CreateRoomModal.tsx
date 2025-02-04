@@ -83,7 +83,7 @@ const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
             )}
           </InputGroup>
           <UserListSection>
-            <label>대화상대 선택 (최소 2명)</label>
+            <label>대화상대 선택</label>
             {showUserError && (
               <ErrorMessage>최소 2명 이상 선택해주세요</ErrorMessage>
             )}
