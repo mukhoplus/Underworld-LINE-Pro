@@ -32,7 +32,6 @@ const HelloWrapper = styled.div`
   @media screen and (max-width: ${breakpoints.mobile}) {
     width: 300px;
     min-width: 300px;
-    height: 100dvh;
   }
 `;
 
