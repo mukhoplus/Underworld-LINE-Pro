@@ -1,29 +1,33 @@
 .custom-scroll {
+  overflow-y: auto;
+
   /* 스크롤바 초기 상태 스타일 */
-  scrollbar-width: thin;
-  scrollbar-color: transparent transparent;
+  scrollbar-width: thin !important;
+  scrollbar-color: transparent transparent !important;
+
+  -ms-overflow-style: -ms-autohiding-scrollbar;
 
   /* 스크롤바 hover 상태 스타일 */
   &:hover {
-    scrollbar-width: thin;
-    scrollbar-color: gray rgba(23, 107, 135, 0.1);
-    transition: scrollbar-color 0.5s; /* hover 상태가 천천히 변화하도록 설정 */
+    scrollbar-width: thin !important;
+    scrollbar-color: gray rgba(23, 107, 135, 0.1) !important;
+    transition: scrollbar-color 0.5s !important; /* hover 상태가 천천히 변화하도록 설정 */
   }
 
   /* WebKit 스크롤바 스타일 (Chrome, Safari 등) */
   &::-webkit-scrollbar {
-    width: 6px; /* 스크롤바 너비 */
-    scrollbar-width: thin;
+    width: 6px !important; /* 스크롤바 너비 */
+    scrollbar-width: thin !important;
   }
 
   &::-webkit-scrollbar-thumb {
     background-color: transparent; /* 스크롤바 색상 */
-    border-radius: 10px; /* 둥근 스크롤바 모양 */
+    border-radius: 10px !important; /* 둥근 스크롤바 모양 */
   }
 
   &:hover::-webkit-scrollbar-thumb {
-    background-color: gray; /* 스크롤바 hover 시 색상 변경 */
-    transition: scrollbar-color 0.5s; /* hover 상태가 천천히 변화하도록 설정 */
+    background-color: gray !important; /* 스크롤바 hover 시 색상 변경 */
+    transition: scrollbar-color 0.5s !important; /* hover 상태가 천천히 변화하도록 설정 */
   }
 
   &::-webkit-scrollbar-track {
