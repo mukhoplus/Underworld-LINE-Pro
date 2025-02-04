@@ -48,7 +48,7 @@ public class SecurityConfig {
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
-		configuration.addAllowedOrigin("https://underworld-line.mukho.r-e.kr");
+		configuration.addAllowedOrigin("https://linepro.mukho.r-e.kr");
 		configuration.addAllowedOrigin("http://localhost:3000");
 		configuration.addAllowedMethod("*");
 		configuration.addAllowedHeader("*");
