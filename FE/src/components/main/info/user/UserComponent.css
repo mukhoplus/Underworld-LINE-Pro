@@ -1,6 +1,6 @@
 .user-list {
   width: 100%;
-  height: calc(100vh - 60px - 60px - 2.2px);
+  height: calc(100vh - 60px - 60px - 3px);
   margin: 0 auto;
 
   flex-direction: column;

@@ -143,12 +143,14 @@ const MainWrapper = styled(Col)`
   @media screen and (min-width: ${breakpoints.mobile}) {
     min-width: 450px;
     max-width: 450px;
+    height: 100dvh;
     border-left: 1px solid gray;
     border-right: 1px solid gray;
   }
 
   @media screen and (max-width: ${breakpoints.mobile}) {
     border: none;
+    height: 100dvh;
   }
 `;
 

@@ -205,22 +205,37 @@ const UserListContainer = styled.div`
   margin-top: 8px;
 
   &::-webkit-scrollbar {
-    width: 8px;
+    width: 8px !important;
   }
 
   &::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 4px;
+    background: #f1f1f1 !important;
+    border-radius: 4px !important;
   }
 
   &::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 4px;
+    background: #888 !important;
+    border-radius: 4px !important;
   }
 
   &::-webkit-scrollbar-thumb:hover {
-    background: #555;
+    background: #555 !important;
   }
+
+   &:hover {
+    scrollbar-color: gray rgba(23, 107, 135, 0.1);
+    
+    &::-webkit-scrollbar-thumb {
+      background-color: gray !important;
+    }
+  }
+  
+  &:active {
+    &::-webkit-scrollbar-thumb {
+      background-color: gray !important;
+    }
+  }
+}
 `;
 
 const UserItem = styled.div`
