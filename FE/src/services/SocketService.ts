@@ -45,7 +45,7 @@ const SocketService = {
 
       setRoomList(roomList);
 
-      // 새 메시지가 있고, 현재 보고 있는 방이 아닌 경우 알림 표시
+      // 새 메시지 알림 로직 개선
       const getUserName = (sendUserId: number) => {
         const user = userList.find(
           (user: UserListDto) => user.userId === sendUserId
@@ -53,11 +53,23 @@ const SocketService = {
         return user?.name || "";
       };
 
-      if (chatList.length > 0 && responseRoomId !== roomId) {
+      // 알림 표시 조건:
+      // 1. 메시지가 있고
+      // 2. 현재 채팅방 목록 화면에 있거나 (roomId === 0) 다른 방의 메시지이고
+      // 3. 본인이 보낸 메시지가 아니고
+      // 4. 해당 방에 읽지 않은 메시지가 있을 때
+      if (chatList.length > 0) {
         const lastChat = chatList[chatList.length - 1];
         const room = roomList.find((room) => room.roomId === responseRoomId);
 
-        if (lastChat && room && lastChat.sendUserId !== userId) {
+        const shouldShowNotification =
+          lastChat &&
+          room &&
+          lastChat.sendUserId !== userId &&
+          room.notReadCount > 0 &&
+          (roomId === 0 || responseRoomId !== roomId); // 메인 화면이거나 다른 방의 메시지
+
+        if (shouldShowNotification) {
           showNotification(
             room.roomName,
             `${getUserName(lastChat.sendUserId)}: ${lastChat.message}`
@@ -68,12 +80,11 @@ const SocketService = {
       if (roomId === 0) return;
       if (roomId !== responseRoomId) return;
 
+      setChatList(chatList);
+
       if (isInNotReadMessages(roomList)) {
         SocketService.read(roomId, userId);
-        return;
       }
-
-      setChatList(chatList);
     };
 
     SocketService.socket.onclose = () => {};
