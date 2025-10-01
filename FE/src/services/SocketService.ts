@@ -7,7 +7,7 @@ import {
 import { RoomDto } from "../interfaces/Room";
 import { UserListDto } from "../interfaces/User";
 import { SOCKET_URL } from "../services/HostingService";
-import { isInNotReadMessages } from "../utils/MessageUtil";
+// import { isInNotReadMessages } from "../utils/MessageUtil";
 import { showNotification } from "../utils/NotificationUtil";
 
 interface WebSocketData {
@@ -20,6 +20,7 @@ const SocketService = {
   getState: null as
     | (() => { roomId: number; userId: number; userList: UserListDto[] })
     | null,
+  isReadRequestSent: false, // 읽음 처리 요청 중복 방지 플래그
 
   initialize: (
     getState: () => { roomId: number; userId: number; userList: UserListDto[] }
@@ -82,7 +83,17 @@ const SocketService = {
 
       setChatList(chatList);
 
-      if (isInNotReadMessages(roomList)) {
+      // 현재 방에 읽지 않은 메시지가 있는지 확인
+      const currentRoom = roomList.find((room) => room.roomId === roomId);
+      const hasUnreadMessages = currentRoom && currentRoom.notReadCount > 0;
+
+      // 읽음 처리: 아직 읽음 요청을 보내지 않았고, 채팅이 있고, 현재 방에 읽지 않은 메시지가 있을 때만 실행
+      if (
+        !SocketService.isReadRequestSent &&
+        chatList.length > 0 &&
+        hasUnreadMessages
+      ) {
+        SocketService.isReadRequestSent = true;
         SocketService.read(roomId, userId);
       }
     };
@@ -125,7 +136,18 @@ const SocketService = {
 
     try {
       SocketService.socket.send(JSON.stringify(socketSendDto));
+      console.log("읽음 처리 요청:", socketSendDto);
+
+      // 읽음 처리 요청 후 잠시 후 플래그 리셋 (서버 응답 대기)
+      setTimeout(() => {
+        SocketService.isReadRequestSent = false;
+      }, 1000);
     } catch (error) {}
+  },
+
+  // 방 변경 시 읽음 처리 플래그 리셋
+  resetReadFlag: () => {
+    SocketService.isReadRequestSent = false;
   },
 
   close: () => {
