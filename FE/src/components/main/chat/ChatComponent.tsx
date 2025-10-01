@@ -11,7 +11,7 @@ import { UserListDto } from "../../../interfaces/User";
 import { axiosRequest } from "../../../services/AxiosService";
 import SocketService from "../../../services/SocketService";
 import { LongStringUtil } from "../../../utils/LongStringUtil";
-import { isInNotReadMessages } from "../../../utils/MessageUtil";
+// import { isInNotReadMessages } from "../../../utils/MessageUtil";
 import ChatList from "./list/ChatList";
 import ParticipantsModal from "./modal/ParticipantsModal";
 
@@ -83,13 +83,16 @@ const ChatComponent: React.FC<ChatComponentProps> = ({
     await axiosRequest("get", `/chat/${roomId}`)
       .then((response) => {
         const newChatList: ChatDto[] = response.data;
-
-        if (isInNotReadMessages(roomList)) {
-          SocketService.read(roomId, userId);
-          return;
-        }
-
         setChatList(newChatList);
+
+        // 현재 방에 읽지 않은 메시지가 있는지 확인
+        const currentRoom = roomList.find((room) => room.roomId === roomId);
+        const hasUnreadMessages = currentRoom && currentRoom.notReadCount > 0;
+
+        // 채팅이 있고, 현재 방에 읽지 않은 메시지가 있을 때만 읽음 처리
+        if (newChatList.length > 0 && hasUnreadMessages) {
+          SocketService.read(roomId, userId);
+        }
       })
       .catch(() => {});
   };
@@ -170,12 +173,16 @@ const ChatComponent: React.FC<ChatComponentProps> = ({
   useEffect(() => {
     setInputMessage("");
     dateOutput = {}; // eslint-disable-line react-hooks/exhaustive-deps
-    handleChatList();
 
+    // 방 변경 시 읽음 처리 플래그 리셋
+    SocketService.resetReadFlag();
+
+    handleChatList();
     scrollToBottom();
   }, [userId, roomId, scrollToBottom]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
+    // 새 메시지 전송/수신시 항상 최하단으로 이동
     scrollToBottom();
   }, [chatList, scrollToBottom]);
 
